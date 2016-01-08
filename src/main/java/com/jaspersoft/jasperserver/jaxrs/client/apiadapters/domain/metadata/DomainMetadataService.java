@@ -18,33 +18,18 @@
  * You should have received a copy of the GNU Affero General Public  License
  * along with this program.&nbsp; If not, see <http://www.gnu.org/licenses/>.
  */
-package com.jaspersoft.jasperserver.jaxrs.client.apiadapters.domain;
+package com.jaspersoft.jasperserver.jaxrs.client.apiadapters.domain.metadata;
 
-import com.jaspersoft.jasperserver.dto.domain.DomainMetaData;
 import com.jaspersoft.jasperserver.jaxrs.client.apiadapters.AbstractAdapter;
-import com.jaspersoft.jasperserver.jaxrs.client.core.JerseyRequest;
 import com.jaspersoft.jasperserver.jaxrs.client.core.SessionStorage;
-import com.jaspersoft.jasperserver.jaxrs.client.core.exceptions.handling.DefaultErrorHandler;
-import com.jaspersoft.jasperserver.jaxrs.client.core.operationresult.OperationResult;
-import java.util.ArrayList;
-import java.util.Arrays;
 
-public class DomainMetadataAdapter extends AbstractAdapter {
-    private final ArrayList<String> path = new ArrayList<String>();
+public class DomainMetadataService extends AbstractAdapter {
 
-    public DomainMetadataAdapter(SessionStorage sessionStorage, String domainURI) {
+    public DomainMetadataService(SessionStorage sessionStorage) {
         super(sessionStorage);
-        path.add("domains");
-        path.addAll(Arrays.asList(domainURI.split("/")));
-        path.add("metadata");
     }
 
-    public OperationResult<DomainMetaData> retrieve() {
-        return JerseyRequest.buildRequest(
-                sessionStorage,
-                DomainMetaData.class,
-                path.toArray(new String[path.size()]),
-                new DefaultErrorHandler()
-        ).get();
+    public DomainMetadataAdapter domainMetadata(String domainURI) {
+        return new DomainMetadataAdapter(sessionStorage, domainURI);
     }
 }
