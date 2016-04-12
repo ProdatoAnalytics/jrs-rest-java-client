@@ -42,61 +42,65 @@ The test suite of the library includes live reporting examples of this client ag
   * [Reordering input controls structure](#reordering-input-controls-structure).
   * [Listing input controls values](#listing-input-controls-values).
   * [Setting input controls values](#setting-input-controls-values).
-7. [Administration services](#administration-services).
-8. [Organizations service](#organizations-service).
-  * [Searching for Organizations](#searching-for-organizations).
-  * [Viewing an Organization](#viewing-an-organization).
-  * [Creating an Organization](#creating-an-organization).
-  * [Modifying Organization Properties](#modifying-organization-properties).
-  * [Deleting an Organization](#deleting-an-organization).
-9. [Users service](#users-service).
-  * [Searching for Users](#searching-for-users).
-  * [Viewing a User](#viewing-a-user).
-  * [Creating a User](#creating-a-user).
-  * [Modifying User Properties](#modifying-user-properties).
-  * [Deleting a User](#deleting-a-user).
-10. [Attributes service](#attributes-service).
-  * [Viewing User Attributes](#viewing-user-attributes).
-  * [Setting User Attributes](#setting-user-attributes).
-  * [Deleting User Attributes](#deleting-user-attributes).
-  * [Viewing Organization Attributes](#viewing-organization-attributes).
-  * [Setting Organization Attributes](#setting-organization-attributes).
-  * [Deleting Organization Attributes](#deleting-organization-attributes).
-  * [Viewing Server Attributes](#viewing-server-attributes).
-  * [Setting Server Attributes](#setting-server-attributes).
-  * [Deleting Server Attributes](#deleting-server-attributes).
-  * [Getting attributes permissions](#getting-attributes-permissions).
-  * [Searching attributes ](#searching-attributes).
-11. [The Roles Service](#the-roles-service).
-  * [Searching for Roles](#searching-for-roles).
-  * [Viewing a Role](#viewing-a-role).
-  * [Creating a Role](#creating-a-role).
-  * [Modifying a Role](#modifying-a-role).
-  * [Setting Role Membership](#setting-role-membership).
-  * [Deleting a Role](#deleting-a-role).
-12. [The Settings Service](#settings-service).
-13. [Resources Service](#resources-service).
-  * [Searching the Repository](#searching-the-repository).
-  * [Viewing Resource Details](#viewing-resource-details).
-  * [Downloading File Resources](#downloading-file-resources).
-  * [Creating a Resource](#creating-a-resource).
-  * [Modifying a Resource](#modifying-a-resource).
-  * [Copying a Resource](#copying-a-resource).
-  * [Moving a Resource](#moving-a-resource).
-  * [Uploading SemanticLayerDataSource](#uploading-semanticlayerdatasource).   
-  * [Uploading MondrianConnection](#uploading-mondrianconnection).
-  * [Uploading SecureMondrianConnection](#uploading-securemondrianconnection).
-  * [Uploading ReportUnit](#uploading-reportunit).
-  * [Creating and Updating File and InputStream Resources](#creating-and-updating-file-and-inputstream-resources).
-  * [Deleting Resources](#deleting-resources).
-14. [The Permissions Service](#the-permissions-service).
-  * [Viewing Multiple Permissions](#viewing-multiple-permissions).
-  * [Viewing a Single Permission](#viewing-a-single-permission).
-  * [Setting Multiple Permissions](#setting-multiple-permissions).
-  * [Setting a Single Permission](#setting-a-single-permission).
-  * [Deleting Permissions in Bulk](#deleting-permissions-in-bulk).
-  * [Deleting a Single Permission](#deleting-a-single-permission).
-15. [Jobs service](#jobs-service).
+6. [Administration services](#administration-services).
+  1. [Organizations service](#organizations-service).
+    * [Searching for Organizations](#searching-for-organizations).
+    * [Viewing an Organization](#viewing-an-organization).
+    * [Creating an Organization](#creating-an-organization).
+    * [Modifying Organization Properties](#modifying-organization-properties).
+    * [Deleting an Organization](#deleting-an-organization).
+  2. [Users service](#users-service).
+    * [Searching for Users](#searching-for-users).
+    * [Viewing a User](#viewing-a-user).
+    * [Creating a User](#creating-a-user).
+    * [Modifying User Properties](#modifying-user-properties).
+    * [Deleting a User](#deleting-a-user).
+  3. [Attributes service](#attributes-service).
+    * [Viewing User Attributes](#viewing-user-attributes).
+    * [Setting User Attributes](#setting-user-attributes).
+    * [Deleting User Attributes](#deleting-user-attributes).
+    * [Viewing Organization Attributes](#viewing-organization-attributes).
+    * [Setting Organization Attributes](#setting-organization-attributes).
+    * [Deleting Organization Attributes](#deleting-organization-attributes).
+    * [Viewing Server Attributes](#viewing-server-attributes).
+    * [Setting Server Attributes](#setting-server-attributes).
+    * [Deleting Server Attributes](#deleting-server-attributes).
+    * [Getting attributes permissions](#getting-attributes-permissions).
+    * [Searching attributes ](#searching-attributes).
+  4. [The Roles Service](#the-roles-service).
+    * [Searching for Roles](#searching-for-roles).
+    * [Viewing a Role](#viewing-a-role).
+    * [Creating a Role](#creating-a-role).
+    * [Modifying a Role](#modifying-a-role).
+    * [Setting Role Membership](#setting-role-membership).
+    * [Deleting a Role](#deleting-a-role).
+  5. [The Settings Service](#settings-service).
+    * [Getting server specific settings](#getting-server-specific-settings).
+7. [Repository Services](#repository-services).
+  1. [Resources Service](#resources-service).
+    * [Searching the Repository](#searching-the-repository).
+    * [Viewing Resource Details](#viewing-resource-details).
+    * [Downloading File Resources](#downloading-file-resources).
+    * [Creating a Resource](#creating-a-resource).
+    * [Modifying a Resource](#modifying-a-resource).
+    * [Copying a Resource](#copying-a-resource).
+    * [Moving a Resource](#moving-a-resource).
+    * [Uploading SemanticLayerDataSource](#uploading-semanticlayerdatasource).   
+    * [Uploading MondrianConnection](#uploading-mondrianconnection).
+    * [Uploading SecureMondrianConnection](#uploading-securemondrianconnection).
+    * [Uploading ReportUnit](#uploading-reportunit).
+    * [Uploading File Resources](#uploading-file-resources).
+    * [Deleting Resources](#deleting-resources).
+8. [Data Discovery Services](#repository-services).
+  1. [Domain Service](#resources-service).
+    * [Searching the Repository](#searching-the-repository).
+    * [Viewing Resource Details](#viewing-resource-details).
+    * [Downloading File Resources](#downloading-file-resources).
+  2. [The Permissions Service](#the-permissions-service).
+    * [Viewing Multiple Permissions](#viewing-multiple-permissions).
+    * [Viewing a Single Permission](#viewing-a-single-permission).
+    * [Setting Multiple Permissions](#setting-multiple-permissions).
+9. [Jobs service](#jobs-service).
   * [Listing Report Jobs](#listing-report-jobs).
   * [Viewing a Job Definition](#viewing-a-job-definition).
   * [Extended Job Search](#extended-job-search).
@@ -107,33 +111,30 @@ The test suite of the library includes live reporting examples of this client ag
   * [Pausing Jobs](#pausing-jobs).
   * [Resuming Jobs](#resuming-jobs).
   * [Restarting Failed Jobs](#restarting-failed-jobs).
-16. [Calendars service](#calendars-service).
+10. [Calendars service](#calendars-service).
   * [Listing All Registered Calendar Names](#listing-all-registered-calendar-names).
   * [Viewing an Exclusion Calendar](#viewing-an-exclusion-calendar).
   * [Adding or Updating an Exclusion Calendar](#adding-or-updating-an-exclusion-calendar).
   * [Deleting an Exclusion Calendar](#deleting-an-exclusion-calendar).
-17. [Export service](#export-service).
-  * [Checking the Export Task](#checking-the-export-task).
-  * [Fetching the Export Output](#fetching-the-export-output).
-18. [Import service](#import-service).
-  * [Checking the Import Task](#checking-the-import-task).
-  * [Managing the Import Task](#managing-the-import-task). 
-19. [Domain metadata service](#domainmetadata-service).
-20. [Thumbnail Search Service](#thumbnail-search-service).
-21. [Diagnostic Service](#diagnostic-service).
-22. [Query Executor Service](#query-executor-service).
-23. [Server Information Service](#server-information-service).
-24. [Bundles service](#bundles-service).
-25. [Asynchronous API](#asynchronous-api).
-26. [Possible issues](#possible-issues).
-27. [Maven dependency to add jasperserver-rest-client to your app](#maven-dependency-to-add-jasperserver-rest-client-to-your-app).
-28. [License](#license).
+11. [Import/Export](#importexport).
+  1. [Export service](#export-service).
+    * [Checking the Export State](#checking-the-export-state).
+    * [Fetching the Export Output](#fetching-the-export-output).
+  2. [Import service](#import-service).
+    * [Checking the Import State](#checking-the-import-state).
+12. [Domain metadata service](#domainmetadata-service).
+13. [Thumbnail Search Service](#thumbnail-search-service).
+14. [Diagnostic Service](#diagnostic-service).
+15. [Query Executor Service](#query-executor-service).
+16. [Server Information Service](#server-information-service).
+17. [Bundles service](#bundles-service).
+18. [Asynchronous API](#asynchronous-api).
+19. [Getting serialized content from response](#getting-serialized-content-from-response).
+20. [Possible issues](#possible-issues).
+21. [Maven dependency to add jasperserver-rest-client to your app](#maven-dependency-to-add-jasperserver-rest-client-to-your-app).
+22. [License](#license).
 
-# Introduction
------------------
-With this client library, you can easily write Java applications which can interact with a JasperReports Server using the Server REST API, which is documented here: [TIBCO JasperReports Server REST API Reference](https://community.jaspersoft.com/documentation/tibco-jasperreports-server-rest-api-reference/v640/rest-api-overview). This library provides a very friendly, high level Java API, which is productive and will improve the quality of your applications accessing the JasperReports Server. 
-
-# Getting the JasperReports Server REST Client library
+Introduction
 -------------
 To use the library in your Maven-based Java applications, you need to specify the dependency and repository which are given below or download jar file manually from:
 ```
