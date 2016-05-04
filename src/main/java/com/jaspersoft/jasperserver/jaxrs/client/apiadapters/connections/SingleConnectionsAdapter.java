@@ -6,7 +6,6 @@ import com.jaspersoft.jasperserver.dto.resources.ClientCustomDataSource;
 import com.jaspersoft.jasperserver.dto.resources.ClientJdbcDataSource;
 import com.jaspersoft.jasperserver.dto.resources.ClientJndiJdbcDataSource;
 import com.jaspersoft.jasperserver.dto.resources.ClientReportUnit;
-import com.jaspersoft.jasperserver.dto.resources.ClientSemanticLayerDataSource;
 import com.jaspersoft.jasperserver.jaxrs.client.apiadapters.AbstractAdapter;
 import com.jaspersoft.jasperserver.jaxrs.client.core.JerseyRequest;
 import com.jaspersoft.jasperserver.jaxrs.client.core.MimeTypeUtil;
