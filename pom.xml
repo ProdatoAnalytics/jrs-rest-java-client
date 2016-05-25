@@ -16,7 +16,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <powermock.version>1.5.5</powermock.version>
-     </properties>
+        <jasperserver-dto.version>6.2.0-adhoc-rest-api-SNAPSHOT</jasperserver-dto.version>
+    </properties>
 
     <scm>
         <connection>scm:git:http://github.com/Jaspersoft/jrs-rest-java-client</connection>
@@ -40,7 +41,7 @@
         <dependency>
             <groupId>com.jaspersoft.jasperserver</groupId>
             <artifactId>jasperserver-dto</artifactId>
-            <version>6.2.0-adhoc-rest-api-SNAPSHOT</version>
+            <version>${jasperserver-dto.version}</version>
         </dependency>
 
         <!-- Jersey-->
