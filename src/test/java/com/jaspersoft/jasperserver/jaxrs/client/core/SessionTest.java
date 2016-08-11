@@ -8,6 +8,8 @@ import com.jaspersoft.jasperserver.jaxrs.client.apiadapters.authority.roles.Role
 import com.jaspersoft.jasperserver.jaxrs.client.apiadapters.authority.users.UsersService;
 import com.jaspersoft.jasperserver.jaxrs.client.apiadapters.datadiscovery.DataDiscoveryService;
 import com.jaspersoft.jasperserver.jaxrs.client.apiadapters.domain.DomainService;
+import com.jaspersoft.jasperserver.jaxrs.client.apiadapters.connections.ConnectionsService;
+import com.jaspersoft.jasperserver.jaxrs.client.apiadapters.diagnostic.DiagnosticService;
 import com.jaspersoft.jasperserver.jaxrs.client.apiadapters.importexport.exportservice.ExportService;
 import com.jaspersoft.jasperserver.jaxrs.client.apiadapters.importexport.importservice.ImportService;
 import com.jaspersoft.jasperserver.jaxrs.client.apiadapters.inputControls.InputControlsService;
@@ -314,23 +316,23 @@ public class SessionTest {
 
 
     @Test
-    public void should_return_not_null_DataDiscoveryService_instance() {
+    public void should_return_not_null_DiagnosticService_instance() {
         // When
         Session sessionSpy = Mockito.spy(new Session(storageMock));
-        DataDiscoveryService service = sessionSpy.dataDiscoveryService();
+        DiagnosticService service = sessionSpy.diagnosticService();
         // Then
         assertNotNull(service);
-        verify(sessionSpy, times(1)).getService(DataDiscoveryService.class);
+        verify(sessionSpy, times(1)).getService(DiagnosticService.class);
     }
 
     @Test
-    public void should_return_not_null_QueryExecutionService_instance() {
+    public void should_return_not_null_ConnectionsService_instance() {
         // When
         Session sessionSpy = Mockito.spy(new Session(storageMock));
-        QueryExecutionService  service = sessionSpy.queryExecutionService();
+        ConnectionsService service = sessionSpy.connectionsService();
         // Then
         assertNotNull(service);
-        verify(sessionSpy, times(1)).getService(QueryExecutionService.class);
+        verify(sessionSpy, times(1)).getService(ConnectionsService.class);
     }
 
     @AfterMethod
