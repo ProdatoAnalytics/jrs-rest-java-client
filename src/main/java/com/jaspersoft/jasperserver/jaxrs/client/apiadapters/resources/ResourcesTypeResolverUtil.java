@@ -106,4 +106,8 @@ public class ResourcesTypeResolverUtil {
     public static Class<? extends ClientResource> getResourceType(ClientResource resource) {
         return resource.getClass();
     }
+
+    public static <T> boolean isCustomResourceType(Class<T> clazz) {
+        return classToMimeMap.containsKey(clazz);
+    }
 }
