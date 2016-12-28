@@ -40,19 +40,19 @@ The test suite of the library includes live reporting examples of this client ag
    * [Listing input controls values](#listing-input-controls-values).
    * [Setting input controls values](#setting-input-controls-values).
 6. [Administration services](#administration-services).
-   1. [Organizations service](#organizations-service).
+  1. [Organizations service](#organizations-service).
     * [Searching for Organizations](#searching-for-organizations).
     * [Viewing an Organization](#viewing-an-organization).
     * [Creating an Organization](#creating-an-organization).
     * [Modifying Organization Properties](#modifying-organization-properties).
     * [Deleting an Organization](#deleting-an-organization).
-   2. [Users service](#users-service).
+  2. [Users service](#users-service).
     * [Searching for Users](#searching-for-users).
     * [Viewing a User](#viewing-a-user).
     * [Creating a User](#creating-a-user).
     * [Modifying User Properties](#modifying-user-properties).
     * [Deleting a User](#deleting-a-user).
-   3. [Attributes service](#attributes-service).
+  3. [Attributes service](#attributes-service).
     * [Viewing User Attributes](#viewing-user-attributes).
     * [Setting User Attributes](#setting-user-attributes).
     * [Deleting User Attributes](#deleting-user-attributes).
@@ -64,17 +64,17 @@ The test suite of the library includes live reporting examples of this client ag
     * [Deleting Server Attributes](#deleting-server-attributes).
     * [Getting attributes permissions](#getting-attributes-permissions).
     * [Searching attributes ](#searching-attributes).
-   4. [The Roles Service](#the-roles-service).
+  4. [The Roles Service](#the-roles-service).
     * [Searching for Roles](#searching-for-roles).
     * [Viewing a Role](#viewing-a-role).
     * [Creating a Role](#creating-a-role).
     * [Modifying a Role](#modifying-a-role).
     * [Setting Role Membership](#setting-role-membership).
     * [Deleting a Role](#deleting-a-role).
-   5. [The Settings Service](#settings-service).
+  5. [The Settings Service](#settings-service).
     * [Getting server specific settings](#getting-server-specific-settings).
 7. [Repository Services](#repository-services).
-   1. [Resources Service](#resources-service).
+  1. [Resources Service](#resources-service).
     * [Searching the Repository](#searching-the-repository).
     * [Viewing Resource Details](#viewing-resource-details).
     * [Downloading File Resources](#downloading-file-resources).
@@ -88,7 +88,7 @@ The test suite of the library includes live reporting examples of this client ag
     * [Uploading ReportUnit](#uploading-reportunit).
     * [Uploading File Resources](#uploading-file-resources).
     * [Deleting Resources](#deleting-resources).
-   2. [The Permissions Service](#the-permissions-service).
+  2. [The Permissions Service](#the-permissions-service).
     * [Viewing Multiple Permissions](#viewing-multiple-permissions).
     * [Viewing a Single Permission](#viewing-a-single-permission).
     * [Setting Multiple Permissions](#setting-multiple-permissions).
