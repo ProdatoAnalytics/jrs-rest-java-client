@@ -122,16 +122,20 @@ The test suite of the library includes live reporting examples of this client ag
   *[Report Metadata](#report-metadata)
 12. [Thumbnail Search Service](#thumbnail-search-service).
 13. [Diagnostic Service](#diagnostic-service).
-14. [Contexts Service] (#contexts-service).
+14. [Contexts Service](#contexts-service).
   *[Domain Context Service](#domain-context-service).
-15. [Query Executor Service](#query-executor-service).
-16. [Server Information Service](#server-information-service).
-17. [Bundles service](#bundles-service).
-18. [Asynchronous API](#asynchronous-api).
-19. [Getting serialized content from response](#getting-serialized-content-from-response).
-20. [Possible issues](#possible-issues).
-21. [Maven dependency to add jasperserver-rest-client to your app](#maven-dependency-to-add-jasperserver-rest-client-to-your-app).
-22. [License](#license).
+15. [Data Discovery Service](#data-discovery-service).
+  *[Domain data discovery](#domain-data-discovery).
+  *[DomEl data discovery](#domel-data-discovery ).
+  *[Derived table data discovery](#derived-table-data-discovery).
+16. [Query Executor Service](#query-executor-service).
+17. [Server Information Service](#server-information-service).
+18. [Bundles service](#bundles-service).
+19. [Asynchronous API](#asynchronous-api).
+20. [Getting serialized content from response](#getting-serialized-content-from-response).
+21. [Possible issues](#possible-issues).
+22. [Maven dependency to add jasperserver-rest-client to your app](#maven-dependency-to-add-jasperserver-rest-client-to-your-app).
+23. [License](#license).
 
 Introduction
 -------------
@@ -2366,7 +2370,7 @@ OperationResult<CollectorSettingsList> operationResult = session
                                 .delete();
 ```
 
-###Contexts Service
+### Contexts Service
 
 Using the service you are able to keep some state or context on the server and execute some actions on this state. General service have next API:
 - save context: 
@@ -2543,7 +2547,22 @@ This API allows to validate DomEL expressions and convert them from string repre
                 .domElContext()
                 .create(expressionStringContext);
 ```
+####Derived table data discovery
+This API allows to validate DomEL expressions and convert them from string representation to object representation and back.
 
+```java
+  private SqlExecutionRequest sqlExecutionRequest;
+        sqlExecutionRequest = new SqlExecutionRequest().
+                setSql("select * from account").
+                setDataSourceUri("/public/Samples/Data_Sources/FoodmartDataSource");
+
+     OperationResult<PresentationGroupElement> operationResult = session
+                .dataDiscoveryService()
+                .derivedTableContext()
+                .execute(sqlExecutionRequest);
+
+
+```
 ###Query Execution Service
 In addition to running reports, JasperReports Server exposes queries that you can run through the QueryExecution service.
 For now the only resource that supports queries is an AdHoc data view. In present time JasperReportsServer supports only synchronize query execution.
