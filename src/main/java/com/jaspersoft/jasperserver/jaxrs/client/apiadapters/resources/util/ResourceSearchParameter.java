@@ -19,8 +19,8 @@
  * along with this program.&nbsp; If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jaspersoft.jasperserver.jaxrs.client.apiadapters.resources;
-@Deprecated
+package com.jaspersoft.jasperserver.jaxrs.client.apiadapters.resources.util;
+
 public enum ResourceSearchParameter {
 
     /**
@@ -110,11 +110,12 @@ public enum ResourceSearchParameter {
     FORCE_TOTAL_COUNT("forceTotalCount"),
 
     /**
-     * Optional. Forces all result pages to have the LIMIT number of results.
+     * Specifies a resources inFolder delete. Repeat this paramter inFolder delete multiple
+     * resources.
      *
-     * Type/Value: true|false. 
+     * Type/Value: String
      */
-    FORCE_FULL_PAGE("forceFullPage")
+    RESOURCE_URI("resourceUri")
 
     ;
 
