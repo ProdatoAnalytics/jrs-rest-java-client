@@ -371,7 +371,7 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
         assertNotNull(retrieved);
         assertSame(retrieved, operationResultMock);
 
-        Mockito.verify(jerseyRequestMock).addParams(any(MultivaluedHashMap.class));
+        Mockito.verify(jerseyRequestMock, times(2)).addParams(any(MultivaluedHashMap.class));
         Mockito.verify(jerseyRequestMock).setAccept(ResourceMediaType.FOLDER_JSON);
         Mockito.verify(jerseyRequestMock).get();
     }
@@ -401,7 +401,7 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
         assertNotNull(retrieved);
         assertSame(retrieved, operationResultMock);
 
-        Mockito.verify(jerseyRequestMock).addParams(any(MultivaluedHashMap.class));
+        Mockito.verify(jerseyRequestMock, times(2)).addParams(any(MultivaluedHashMap.class));
         Mockito.verify(jerseyRequestMock).setAccept(ResourceMediaType.FOLDER_XML);
         Mockito.verify(jerseyRequestMock).get();
     }
