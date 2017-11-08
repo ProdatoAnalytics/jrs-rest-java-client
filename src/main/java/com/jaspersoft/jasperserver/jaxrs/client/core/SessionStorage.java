@@ -23,7 +23,6 @@ package com.jaspersoft.jasperserver.jaxrs.client.core;
 
 import com.jaspersoft.jasperserver.jaxrs.client.filters.SessionOutputFilter;
 import com.jaspersoft.jasperserver.jaxrs.client.providers.CustomRepresentationTypeProvider;
-import com.sun.jersey.multipart.impl.MultiPartWriter;
 import java.security.SecureRandom;
 import java.util.Locale;
 import java.util.Map;
@@ -148,11 +147,9 @@ public class SessionStorage {
         rootTarget
                 .register(customRepresentationTypeProvider)
                 .register(JacksonFeature.class)
-                .register(MultiPartFeature.class)
-                .register(MultiPartWriter.class);
-        if (cookies != null) {
-            //rootTarget.register(new SessionOutputFilter(sessionId));
-            rootTarget.register(new SessionOutputFilter(this));
+                .register(MultiPartFeature.class);
+        if (sessionId != null) {
+            rootTarget.register(new SessionOutputFilter(sessionId));
         }
         if (configuration.getLogHttp()) {
             rootTarget.register(initLoggingFilter());
