@@ -102,6 +102,7 @@ public class SingleResourceAdapter extends AbstractAdapter {
         JerseyRequest<T> request = buildRequest(clazz);
         request.setAccept(MimeTypeUtil.toCorrectContentMime(sessionStorage.getConfiguration(),
                 ResourcesTypeResolverUtil.extractClientType(clazz)));
+        request.addParams(params);
         return request.get();
     }
 
@@ -131,7 +132,7 @@ public class SingleResourceAdapter extends AbstractAdapter {
     }
 
     private boolean isRootFolder(String resourceUri) {
-        return "/" .equals(resourceUri) || "" .equals(resourceUri);
+        return "/".equals(resourceUri) || "".equals(resourceUri);
     }
 
     public OperationResult<InputStream> downloadBinary() {
@@ -269,17 +270,17 @@ public class SingleResourceAdapter extends AbstractAdapter {
 
     /**
      * @deprecated  use @Link {@link #detailsForType(Class)}  (Class)}*/
-@Deprecated
+    @Deprecated
     public <T extends ClientResource<T>> OperationResult<T> get(Class<T> clazz) {
         JerseyRequest<T> request = buildRequest(clazz);
-        request.setAccept(MimeTypeUtil.toCorrectContentMime(sessionStorage.getConfiguration(),
-                ResourcesTypeResolverUtil.extractClientType(clazz)));
+            request.setAccept(MimeTypeUtil.toCorrectContentMime(sessionStorage.getConfiguration(),
+                    ResourcesTypeResolverUtil.extractClientType(clazz)));
+        request.addParams(params);
         return request.get();
     }
-
     /**
      * @deprecated  use @Link {@link #details()} */
-@Deprecated
+    @Deprecated
     public <T extends ClientResource<T>> OperationResult<? extends ClientResource> get() {
     JerseyRequest<? extends ClientResource> request;
     if (isRootFolder(resourceUri)) {
@@ -291,6 +292,7 @@ public class SingleResourceAdapter extends AbstractAdapter {
         request.setAccept(MimeTypeUtil.toCorrectContentMime(sessionStorage.getConfiguration(),
                 ResourcesTypeResolverUtil.extractClientType(ClientFile.class)));
     }
+    request.addParams(params);
     return request.get();
 }
 
