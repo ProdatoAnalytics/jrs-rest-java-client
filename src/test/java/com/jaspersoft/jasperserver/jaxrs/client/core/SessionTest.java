@@ -337,6 +337,6 @@ public class SessionTest {
 
     @AfterMethod
     public void after() {
-        reset(storageMock, targetMock, builderMock, responseMock, statusTypeMock, clientMock);
+        reset(storageMock, configurationMock, credentialsMock, targetMock, builderMock, responseMock, statusTypeMock, clientMock);
     }
 }
