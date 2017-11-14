@@ -222,7 +222,16 @@ public class SingleResourceAdapter extends AbstractAdapter {
         return request.get();
     }
 
-    public OperationResult<ClientFile> uploadFile(File fileContent,
+    public OperationResult<ClientFile> updateFile(File fileContent,
+                                                  ClientFile.FileType fileType,
+                                                  String label,
+                                                  String description) {
+        FormDataMultiPart form = prepareUploadForm(fileContent, fileType, label, description);
+        JerseyRequest<ClientFile> request = prepareUploadFileRequest();
+        return request.put(form);
+    }
+
+    public OperationResult<ClientFile> createFile(File fileContent,
                                                   ClientFile.FileType fileType,
                                                   String label,
                                                   String description) {
