@@ -878,10 +878,12 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
 
 
     @Test
-    public void should_upload_file() throws InterruptedException {
+    public void should_create_and_update_file() throws InterruptedException {
 
         /** Given **/
         String resourceUri = "requestId";
+        
+        // Add it
 
         SingleResourceAdapter adapter = new SingleResourceAdapter(sessionStorageMock, resourceUri);
 
@@ -894,7 +896,7 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
 
 
         /** When **/
-        OperationResult<ClientFile> retrieved = adapter.uploadFile(fileMock, FileType.txt, "label_", "description_");
+        OperationResult<ClientFile> retrieved = adapter.createFile(fileMock, FileType.txt, "label_", "description_");
 
 
         /** Then **/
@@ -903,10 +905,36 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
         verify(clientFileJerseyRequestMock, times(1)).post(captor.capture());
 
         FormDataMultiPart intercepted = captor.getValue();
-        Map<String, List<FormDataBodyPart>> recievedFields = intercepted.getFields();
+        Map<String, List<FormDataBodyPart>> receivedFields = intercepted.getFields();
 
-        assertSame(recievedFields.get("label").get(0).getValue(), "label_");
-        assertSame(recievedFields.get("description").get(0).getValue(), "description_");
+        assertSame(receivedFields.get("label").get(0).getValue(), "label_");
+        assertSame(receivedFields.get("description").get(0).getValue(), "description_");
+        
+        // now update it
+        adapter = new SingleResourceAdapter(sessionStorageMock, resourceUri);
+        
+        mockStatic(JerseyRequest.class);
+        when(buildRequest(eq(sessionStorageMock),
+                eq(ClientFile.class),
+                eq(new String[]{"resources", resourceUri}),
+                any(DefaultErrorHandler.class))).thenReturn(clientFileJerseyRequestMock);
+        doReturn(clientFileOperationResultMock).when(clientFileJerseyRequestMock).put(anyObject());
+
+
+        /** When **/
+        retrieved = adapter.updateFile(fileMock, FileType.txt, "label_upd", "description_upd");
+
+
+        /** Then **/
+        assertNotNull(retrieved);
+        assertSame(retrieved, clientFileOperationResultMock);
+        verify(clientFileJerseyRequestMock, times(1)).put(captor.capture());
+
+        intercepted = captor.getValue();
+        receivedFields = intercepted.getFields();
+
+        assertSame(receivedFields.get("label").get(0).getValue(), "label_upd");
+        assertSame(receivedFields.get("description").get(0).getValue(), "description_upd");
     }
 
     @Test
