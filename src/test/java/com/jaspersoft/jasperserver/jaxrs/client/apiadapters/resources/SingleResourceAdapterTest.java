@@ -17,12 +17,17 @@ import com.jaspersoft.jasperserver.jaxrs.client.core.operationresult.OperationRe
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataMultiPart;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
+
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -31,6 +36,7 @@ import org.mockito.internal.util.reflection.Whitebox;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.testng.PowerMockTestCase;
+import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -111,7 +117,9 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
     @Mock
     private File fileMock;
 
-
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+    
     @BeforeMethod
     public void before() {
         initMocks(this);
@@ -287,7 +295,7 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
     /**
      * for {@link com.jaspersoft.jasperserver.jaxrs.client.apiadapters.resources.SingleResourceAdapter#asyncUploadFile(java.io.File, com.jaspersoft.jasperserver.dto.resources.ClientFile.FileType, String, String, com.jaspersoft.jasperserver.jaxrs.client.core.Callback)}
      */
-    public void should_upload_file_asynchronously() throws InterruptedException {
+    public void should_create_resource_file_asynchronously() throws InterruptedException {
 
         /** Given **/
         String resourceUri = "requestId";
@@ -317,7 +325,7 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
 
 
         /** When **/
-        RequestExecution retrieved = adapter.asyncUploadFile(fileMock,
+        RequestExecution retrieved = adapter.asyncCreateResourceFile(fileMock,
                 FileType.txt, "label_", "description_", callback);
 
 
@@ -878,63 +886,46 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
 
 
     @Test
-    public void should_create_and_update_file() throws InterruptedException {
+    public void should_create_and_update_file() throws InterruptedException, IOException {
 
+    	assertNotNull(FileType.txt.getMimeType());
         /** Given **/
         String resourceUri = "requestId";
+        
+        File tempFile = File.createTempFile("AppUpdate", ".jrxml");
+
+        mockStatic(JerseyRequest.class);
+        when(buildRequest(eq(sessionStorageMock), eq(Object.class),
+                eq(new String[]{"resources", resourceUri}), any(DefaultErrorHandler.class))).thenReturn(objectJerseyRequestMock);
+        doReturn(objectOperationResultMock).when(objectJerseyRequestMock).post(anyObject());
+        doReturn(objectOperationResultMock).when(objectJerseyRequestMock).put(anyObject());
         
         // Add it
 
         SingleResourceAdapter adapter = new SingleResourceAdapter(sessionStorageMock, resourceUri);
 
-        mockStatic(JerseyRequest.class);
-        when(buildRequest(eq(sessionStorageMock),
-                eq(ClientFile.class),
-                eq(new String[]{"resources", resourceUri}),
-                any(DefaultErrorHandler.class))).thenReturn(clientFileJerseyRequestMock);
-        doReturn(clientFileOperationResultMock).when(clientFileJerseyRequestMock).post(anyObject());
-
-
         /** When **/
-        OperationResult<ClientFile> retrieved = adapter.createFile(fileMock, FileType.txt, "label_", "description_");
-
+        OperationResult retrieved = adapter.createContentFile(tempFile, FileType.txt, "label_", "description_");
 
         /** Then **/
         assertNotNull(retrieved);
-        assertSame(retrieved, clientFileOperationResultMock);
-        verify(clientFileJerseyRequestMock, times(1)).post(captor.capture());
+        assertSame(retrieved, objectOperationResultMock);
+        verify(objectJerseyRequestMock, times(1)).post(captor.capture());
 
-        FormDataMultiPart intercepted = captor.getValue();
-        Map<String, List<FormDataBodyPart>> receivedFields = intercepted.getFields();
-
-        assertSame(receivedFields.get("label").get(0).getValue(), "label_");
-        assertSame(receivedFields.get("description").get(0).getValue(), "description_");
+        Mockito.verify(objectJerseyRequestMock).addHeader("Content-Description", "description_");
         
         // now update it
         adapter = new SingleResourceAdapter(sessionStorageMock, resourceUri);
-        
-        mockStatic(JerseyRequest.class);
-        when(buildRequest(eq(sessionStorageMock),
-                eq(ClientFile.class),
-                eq(new String[]{"resources", resourceUri}),
-                any(DefaultErrorHandler.class))).thenReturn(clientFileJerseyRequestMock);
-        doReturn(clientFileOperationResultMock).when(clientFileJerseyRequestMock).put(anyObject());
-
 
         /** When **/
-        retrieved = adapter.updateFile(fileMock, FileType.txt, "label_upd", "description_upd");
-
+        retrieved = adapter.updateContentFile(tempFile, FileType.txt, "label_upd", "description_upd");
 
         /** Then **/
         assertNotNull(retrieved);
-        assertSame(retrieved, clientFileOperationResultMock);
-        verify(clientFileJerseyRequestMock, times(1)).put(captor.capture());
+        assertSame(retrieved, objectOperationResultMock);
+        verify(objectJerseyRequestMock, times(1)).put(captor.capture());
 
-        intercepted = captor.getValue();
-        receivedFields = intercepted.getFields();
-
-        assertSame(receivedFields.get("label").get(0).getValue(), "label_upd");
-        assertSame(receivedFields.get("description").get(0).getValue(), "description_upd");
+        Mockito.verify(objectJerseyRequestMock).addHeader("Content-Description", "description_upd");
     }
 
     @Test

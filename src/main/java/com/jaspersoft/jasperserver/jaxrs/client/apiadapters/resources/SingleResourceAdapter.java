@@ -37,6 +37,8 @@ import com.jaspersoft.jasperserver.jaxrs.client.core.exceptions.handling.Default
 import com.jaspersoft.jasperserver.jaxrs.client.core.operationresult.OperationResult;
 import com.sun.jersey.multipart.FormDataMultiPart;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -222,25 +224,22 @@ public class SingleResourceAdapter extends AbstractAdapter {
         return request.get();
     }
 
-    public OperationResult<ClientFile> updateFile(File fileContent,
+    /*
+     * Create resource via resource descriptor multi-part
+     */
+    public OperationResult<ClientFile> createResourceFile(File fileContent,
                                                   ClientFile.FileType fileType,
                                                   String label,
                                                   String description) {
         FormDataMultiPart form = prepareUploadForm(fileContent, fileType, label, description);
         JerseyRequest<ClientFile> request = prepareUploadFileRequest();
-        return request.put(form);
+       	return request.post(form);
     }
 
-    public OperationResult<ClientFile> createFile(File fileContent,
-                                                  ClientFile.FileType fileType,
-                                                  String label,
-                                                  String description) {
-        FormDataMultiPart form = prepareUploadForm(fileContent, fileType, label, description);
-        JerseyRequest<ClientFile> request = prepareUploadFileRequest();
-        return request.post(form);
-    }
-
-    public <R> RequestExecution asyncUploadFile(final File fileContent,
+    /*
+     * Asynch create resource via resource descriptor multi-part
+     */
+    public <R> RequestExecution asyncCreateResourceFile(final File fileContent,
                                                 final ClientFile.FileType fileType,
                                                 final String label,
                                                 final String description,
@@ -250,7 +249,7 @@ public class SingleResourceAdapter extends AbstractAdapter {
         RequestExecution task = new RequestExecution(new Runnable() {
             @Override
             public void run() {
-                callback.execute(request.post(form));
+           		callback.execute(request.post(form));
             }
         });
         ThreadPoolUtil.runAsynchronously(task);
@@ -274,6 +273,65 @@ public class SingleResourceAdapter extends AbstractAdapter {
         JerseyRequest<ClientFile> request = buildRequest(ClientFile.class);
         request.addParams(params);
         request.setContentType(MediaType.MULTIPART_FORM_DATA);
+        return request;
+    }
+
+
+    /*
+     * create file via body post: Creating File Resources by direct streaming
+     */
+    public OperationResult createContentInputStream(InputStream is,
+                                                  ClientFile.FileType fileType,
+                                                  String label,
+                                                  String description) {
+    	JerseyRequest request = prepareCreateOrUpdateFileRequest(fileType, label, description);
+        return request.post(is);
+    }
+
+    /*
+     * update file via body put: Updating File Resources by direct streaming
+     */
+    public OperationResult updateContentInputStream(InputStream is,
+                                                  ClientFile.FileType fileType,
+                                                  String label,
+                                                  String description) {
+    	JerseyRequest request = prepareCreateOrUpdateFileRequest(fileType, label, description);
+        return request.put(is);
+    }
+
+    /*
+     * create file via body: Creating File Resources by direct streaming
+     */
+    public OperationResult createContentFile(File fileContent,
+                                                  ClientFile.FileType fileType,
+                                                  String label,
+                                                  String description) throws FileNotFoundException {
+    	return createContentInputStream(new FileInputStream(fileContent), fileType, label, description);
+    }
+
+    /*
+     * update file via body: Updating File Resources by direct streaming
+     */
+    public OperationResult updateContentFile(File fileContent,
+                                                  ClientFile.FileType fileType,
+                                                  String label,
+                                                  String description) throws FileNotFoundException {
+    	return updateContentInputStream(new FileInputStream(fileContent), fileType, label, description);
+    }
+
+
+    /* Options:
+     * 
+     * Content-Description: <file-description> – Becomes the description field of the created file resource
+	 * Content-Disposition: attachment; filename=<filename> – Becomes the name of the file resource
+     */
+    private JerseyRequest prepareCreateOrUpdateFileRequest(ClientFile.FileType fileType,
+            String label,
+            String description) {
+        JerseyRequest request = buildRequest(Object.class);
+        request.setContentType(fileType.getMimeType());
+        request.addHeader("Content-Description", description);
+        request.addHeader("Content-Disposition", "attachment; filename=" + label);
         return request;
     }
 
