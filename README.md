@@ -313,8 +313,7 @@ We've authenticated as `jasperadmin` user an got a session for this user, all su
 There are two approaches to run a report - in synchronous and asynchronous modes.
 To run report in synchronous mode you use:
 ```java
-OperationResult<InputStream> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<InputStream> result = session
         .reportingService()
         .report("/reports/samples/Cascading_multi_select_report")
         .prepareForRun(ReportOutputFormat.HTML, 1)
@@ -324,8 +323,7 @@ InputStream report = result.getEntity();
 ```
 You can set format of report as String as well(name of format is case insensitive):
 ```java
-OperationResult<InputStream> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<InputStream> result = session
         .reportingService()
         .report("/reports/samples/Cascading_multi_select_report")
         .prepareForRun("HTML", 1)
@@ -334,8 +332,7 @@ OperationResult<InputStream> result = client
 ```
 Also you can use this method to run report with several values for the same parameter. In this case new values of the parameter are added to the previous ones (new values do not replace previous values of the parameter): 
 ```java
-OperationResult<InputStream> result = client
-        .authenticate("superuser", "superuser")
+OperationResult<InputStream> result = session
         .reportingService()
         .report("/reports/samples/Cascading_multi_select_report")
         .prepareForRun(ReportOutputFormat.PDF, 1)
@@ -688,8 +685,7 @@ UsersListWrapper usersListWrapper = operationResult.getEntity();
 Method `username()` with a user ID (username) retrieves a single descriptor containing the full list of user properties and roles.
 ```java
 OperationResult<ClientUser> operationResult =
-        client
-                .authenticate("jasperadmin", "jasperadmin")
+        session
                 .usersService()
                 .user("jasperadmin")
                 .get();
@@ -706,8 +702,7 @@ ClientUser userObject = new ClientUser()
                 .setExternallyDefined(false)
                 .setFullName("John Doe");
 OperationResult<ClientUser> operationResult =
-        client
-                .authenticate("jasperadmin", "jasperadmin")
+        session
                 .usersService()
                 .user(userObject)
                 .get();
@@ -727,15 +722,13 @@ ClientUser user = new ClientUser()
         .setExternallyDefined(false)
         .setFullName("John Doe");
 
-client
-    .authenticate("jasperadmin", "jasperadmin")
+session
     .usersService()
     .user(user.getUsername())
     .createOrUpdate(user);
 
 //Granting new user with admin role
-ClientRole role = client
-        .authenticate("jasperadmin", "jasperadmin")
+ClientRole role = session
         .rolesService()
         .rolename("ROLE_ADMINISTRATOR")
         .get()
@@ -745,8 +738,7 @@ Set<ClientRole> roles = new HashSet<ClientRole>();
 roles.add(role);
 user.setRoleSet(roles);
 
-client
-    .authenticate("jasperadmin", "jasperadmin")
+session
     .usersService()
     .user(user.getUsername())
     .createOrUpdate(user);
@@ -771,8 +763,7 @@ client
 ##Deleting a User
 To delete a user, call the `delete()` method and specify the user ID in the `username()` method.
 ```java
-client
-    .authenticate("jasperadmin", "jasperadmin")
+session
     .usersService()
     .user(user.getUsername())
     .delete();
@@ -1171,8 +1162,7 @@ The `allRoles()` method searches for and lists role definitions. It has options 
 name or by user (`param()` method) that belong to the role. If no search is specified, it returns all roles.
 ```java
 OperationResult<RolesListWrapper> operationResult =
-        client
-                .authenticate("jasperadmin", "jasperadmin")
+        session
                 .rolesService()
                 .allRoles()
                 .param(RolesParameter.USER, "jasperadmin")
@@ -1184,8 +1174,7 @@ RolesListWrapper rolesListWrapper = operationResult.getEntity();
 The `rolename()` method with a role ID retrieves a single role descriptor containing the role properties.
 ```java
 OperationResult<ClientRole> operationResult =
-        client
-                .authenticate("jasperadmin", "jasperadmin")
+        session
                 .rolesService()
                 .rolename("ROLE_ADMINISTRATOR")
                 .get();
@@ -1200,8 +1189,7 @@ ClientRole role = new ClientRole()
         .setName("ROLE_HELLO");
 
 OperationResult<ClientRole> operationResult =
-        client
-                .authenticate("jasperadmin", "jasperadmin")
+        session
                 .rolesService()
                 .rolename(role.getName())
                 .createOrUpdate(role);
@@ -1215,8 +1203,7 @@ ClientRole roleHello = new ClientRole()
         .setName("ROLE_HELLO_HELLO");
 
 OperationResult<ClientRole> operationResult =
-        client
-                .authenticate("jasperadmin", "jasperadmin")
+       session
                 .rolesService()
                 .rolename("ROLE_HELLO")
                 .createOrUpdate(roleHello);
@@ -1231,8 +1218,7 @@ To delete a role, send the DELETE method and specify the role ID (name) in the U
 When this method is successful, the role is permanently deleted.
 ```java
 OperationResult<ClientRole> operationResult =
-        client
-                .authenticate("jasperadmin", "jasperadmin")
+        session
                 .rolesService()
                 .rolename("ROLE_HELLO")
                 .delete();
@@ -1240,7 +1226,7 @@ Response response = operationResult.getResponse();
 ```
 
 #Settings Service
-================
+======================
 
 The Settings service allows you to get server specific settings, required by UI to work with the server in sync. There can be formats and patterns, modes for some modules etc.
 
@@ -1329,15 +1315,13 @@ This new service provides greater performance and more consistent handling of re
 ##Searching the Repository
 The resources service, when `resources()` method used without specifying any repository URI, is used to search the repository. The various parameters let you refine the search and specify how you receive search results.
 ```java
-OperationResult<ClientResourceListWrapper> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<ClientResourceListWrapper> result = session
         .resourcesService()
         .resources()
         .search();
 ClientResourceListWrapper resourceListWrapper = result.getEntity();
 //OR
-OperationResult<ClientResourceListWrapper> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<ClientResourceListWrapper> result = session
         .resourcesService()
         .resources()
         .parameter(ResourceSearchParameter.FOLDER_URI, "/reports/samples")
@@ -1349,8 +1333,7 @@ The response of a search is a set of shortened descriptors showing only the comm
 ##Viewing Resource Details
 Use the `resource()` method and a resource URI with `details()` method to request the resource's complete descriptor.
 ```java
-OperationResult<ClientResource> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<ClientResource> result = session
         .resourcesService()
         .resource("/properties/GlobalPropertiesList")
         .details();
@@ -1363,8 +1346,7 @@ There are two operations on file resources:
 To view the file resource details, specify the URL of the file in `resource()` method and use the code form [Viewing Resource Details](https://github.com/Jaspersoft/jrs-rest-java-client/blob/master/README.md#viewing-resource-details) section.
 To download file binary content, specify the URL of the file in `resource()` method and use the code below
 ```java
-OperationResult<InputStream> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<InputStream> result = session
         .resourcesService()
         .resource("/themes/default/buttons.css")
         .downloadBinary();
@@ -1386,14 +1368,12 @@ folder
         .setUpdateDate("2014-01-24 16:27:47")
         .setVersion(0);
 
-OperationResult<ClientResource> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<ClientResource> session
         .resourcesService()
         .resource(folder.getUri())
         .createOrUpdate(folder);
 //OR
-OperationResult<ClientResource> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<ClientResource> session
         .resourcesService()
         .resource(parenUri)
         .createNew(folder);
@@ -1406,8 +1386,7 @@ PatchDescriptor patchDescriptor = new PatchDescriptor();
 patchDescriptor.setVersion(0);
 patchDescriptor.field("label", "Patch Label");
 
-OperationResult<ClientFolder> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<ClientFolder> result = session
         .resourcesService()
         .resource("/reports/testFolder")
         .patchResource(ClientFolder.class, patchDescriptor);
@@ -1416,8 +1395,7 @@ Note that you must explicitly set the type of resource to update because of serv
 ##Copying a Resource
 To copy a resource, specify in `copyFrom()` method its URI and in `resource()` method URI of destination location.
 ```java
-OperationResult<ClientResource> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<ClientResource> result = session
         .resourcesService()
         .resource("/reports")
         .copyFrom("/datasources/testFolder");
@@ -1425,8 +1403,7 @@ OperationResult<ClientResource> result = client
 ##Moving a Resource
 To move a resource, specify in `moveFrom()` method its URI and in `resource()` method URI of destination location.
 ```java
-OperationResult<ClientResource> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<ClientResource> result = session
         .resourcesService()
         .resource("/datasources")
         .moveFrom("/reports/testFolder");
@@ -1434,8 +1411,7 @@ OperationResult<ClientResource> result = client
 ##Uploading File Resources
 To upload file you must specify the MIME type that corresponds with the desired file type, you can take it from `ClientFile.FileType` enumeration.
 ```java
-OperationResult<ClientFile> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<ClientFile> result = session
         .resourcesService()
         .resource("/reports/testFolder")
         .uploadFile(imageFile, ClientFile.FileType.img, "fileName", "fileDescription");
@@ -1488,8 +1464,7 @@ ClientReportUnit entity = session.resourcesService()
 You can delete resources in two ways, one for single resources and one for multiple resources. To delete multiple resources at once, specify multiple URIs with the `ResourceSearchParameter.RESOURCE_URI` parameter.
 ```java
 //multiple
-OperationResult result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult result = session
         .resourcesService()
         .resources()
         .parameter(ResourceSearchParameter.RESOURCE_URI, "/some/resource/uri/1")
@@ -1497,8 +1472,7 @@ OperationResult result = client
         .delete();
 //OR
 //single
-OperationResult result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult result = session
         .resourcesService()
         .resource("/reports/testFolder")
         .delete();
@@ -1514,8 +1488,7 @@ There are two qualities of a permission:
 
 ```java
 OperationResult<RepositoryPermissionListWrapper> operationResult =
-        client
-                .authenticate("jasperadmin", "jasperadmin")
+        session
                 .permissionsService()
                 .resource("/datasources")
                 .get();
@@ -1524,8 +1497,7 @@ OperationResult<RepositoryPermissionListWrapper> operationResult =
 Specify the recipient in the URL to see a specific assigned permission.
 ```java
 OperationResult<RepositoryPermission> operationResult =
-        client
-                .authenticate("jasperadmin", "jasperadmin")
+        session
                 .permissionsService()
                 .resource("/datasources")
                 .permissionRecipient(PermissionRecipient.ROLE, "ROLE_USER")
@@ -1542,8 +1514,7 @@ permissionList.add(new RepositoryPermission("/themes", "user:/joeuser", 30));
 RepositoryPermissionListWrapper permissionListWrapper = new RepositoryPermissionListWrapper(permissionList);
 
 OperationResult operationResult =
-        client
-                .authenticate("jasperadmin", "jasperadmin")
+        session
                 .permissionsService()
                 .createNew(permissionListWrapper);
 
@@ -1559,8 +1530,7 @@ permission
         .setMask(PermissionMask.READ_WRITE_DELETE);
 
 OperationResult operationResult =
-        client
-                .authenticate("jasperadmin", "jasperadmin")
+        session
                 .permissionsService()
                 .createNew(permission);
 
@@ -1570,8 +1540,7 @@ Response response = operationResult.getResponse();
 The `delete()` method removes all assigned permissions from the designated resource. After returning successfully, all effective permissions for the resource are inherited.
 ```java
 OperationResult operationResult =
-        client
-                .authenticate("jasperadmin", "jasperadmin")
+        session
                 .permissionsService()
                 .resource("/themes")
                 .delete();
@@ -1582,8 +1551,7 @@ Response response = operationResult.getResponse();
 Specify a recipient in the `permissionRecipient()` method and call the `delete()` method to remove only that permission.
 ```java
 OperationResult operationResult =
-        client
-                .authenticate("jasperadmin", "jasperadmin")
+        session
                 .permissionsService()
                 .resource("/")
                 .permissionRecipient(PermissionRecipient.USER, "joeuser")
@@ -1597,8 +1565,7 @@ The jobs service provides the interface to schedule reports and manage scheduled
 ##Listing Report Jobs
 Use the following method to list all jobs managed by the scheduler.
 ```java
-OperationResult<JobSummaryListWrapper> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<JobSummaryListWrapper> result = session
         .jobsService()
         .jobs()
         .get();
@@ -1609,8 +1576,7 @@ The jobs are described in the `JobSummary` element.
 ##Viewing a Job Definition
 The following piece of code with a specific job ID specified in `job()` method retrieves the detailed information about that scheduled job.
 ```java
-OperationResult<Job> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<Job> result = session
         .jobsService()
         .job(8600)
         .get();
@@ -1625,8 +1591,7 @@ Job criteria = new Job);
 criteria.setLabel("updatedLabel");
 criteria.setAlert(new JobAlert());
 
-OperationResult<JobSummaryListWrapper> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<JobSummaryListWrapper> result = session
         .jobsService()
         .jobs()
         .parameter(JobsParameter.SEARCH_LABEL, "hello")
@@ -1652,8 +1617,7 @@ job.setDescription("blablabla");
 JobSource source = job.getSource();
 source.setReportUnitURI("/reports/samples/Employees");
 
-OperationResult<Job> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<Job> result = session
         .jobsService()
         .scheduleReport(job);
 
@@ -1663,8 +1627,7 @@ The body contains the job descriptor of the newly created job. It is similar to 
 ##Viewing Job Status
 The following method returns the current runtime state of a job:
 ```java
-OperationResult<JobState> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<JobState> result = session
         .jobsService()
         .job(8600)
         .state();
@@ -1679,8 +1642,7 @@ String label = "updatedLabel";
 Long jobId = job.getId();
 job.setLabel(label);
 
-OperationResult<Job> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<Job> result = session
         .jobsService()
         .job(jobId)
         .update(job);
@@ -1693,8 +1655,7 @@ To update several jobs at once you should specify jobs IDs as parameters, and se
 Job jobDescriptor = new Job();
 jobDescriptor.setDescription("Bulk update description");
 
-OperationResult<JobIdListWrapper> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<JobIdListWrapper> result = session
         .jobsService()
         .jobs()
         .parameter(JobsParameter.JOB_ID, "8600")
@@ -1705,8 +1666,7 @@ The code above will update the `description` field of jobs with IDs `8600` and `
 ##Pausing Jobs
 The following method pauses currently scheduled job execution. Pausing keeps the job schedule and all other details but prevents the job from running. It does not delete the job.
 ```java
-OperationResult<JobIdListWrapper> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<JobIdListWrapper> result = session
         .jobsService()
         .jobs()
         .parameter(JobsParameter.JOB_ID, "8600")
@@ -1715,8 +1675,7 @@ OperationResult<JobIdListWrapper> result = client
 ##Resuming Jobs
 Use the following method to resume any or all paused jobs in the scheduler. Resuming a job means that any defined trigger in the schedule that occurs after the time it is resumed will cause the report to run again. Missed schedule triggers that occur before the job is resumed are never run.
 ```java
-OperationResult<JobIdListWrapper> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<JobIdListWrapper> result = session
         .jobsService()
         .jobs()
         .parameter(JobsParameter.JOB_ID, "8600")
@@ -1725,8 +1684,7 @@ OperationResult<JobIdListWrapper> result = client
 ##Restarting Failed Jobs
 Use the following method to rerun failed jobs in the scheduler. For each job to be restarted, the scheduler creates an immediate single-run copy of job, to replace the one that failed. Therefore, all jobs listed in the request body will run once immediately after issuing this command. The single-run copies have a misfire policy set so that they do not trigger any further failures (`MISFIRE_ INSTRUCTION_IGNORE_MISFIRE_POLICY`). If the single-run copies fail themselves, no further attempts are made automatically.
 ```java
-OperationResult<JobIdListWrapper> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<JobIdListWrapper> result = session
         .jobsService()
         .jobs()
         .parameter(JobsParameter.JOB_ID, "8600")
@@ -1737,8 +1695,7 @@ The scheduler allows a job to be defined with a list of excluded days or times w
 ##Listing All Registered Calendar Names
 The following method returns the list of all calendar names that were added to the scheduler.
 ```java
-OperationResult<CalendarNameListWrapper> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<CalendarNameListWrapper> result = session
         .jobsService()
         .calendars();  //OR .calendars(CalendarType.HOLIDAY); //to specify the desired calendar type
 
@@ -1747,8 +1704,7 @@ CalendarNameListWrapper calendarNameListWrapper = result.getEntity();
 ##Viewing an Exclusion Calendar
 The following method takes the name of an exclusion calendar and returns the definition of the calendar:
 ```java
-OperationResult<Calendar> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<Calendar> result = session
         .jobsService()
         .calendar("testCalendar")
         .get();
@@ -1764,8 +1720,7 @@ calendar.setDescription("lalala");
 calendar.setTimeZone("GMT+03:00");
 calendar.setExcludeDaysFlags(new boolean[]{true, false, false, false, false, true, true});
 
-OperationResult result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult result = session
         .jobsService()
         .calendar("testCalendar")
         .createOrUpdate(calendar);
@@ -1774,8 +1729,7 @@ Unlike common `ReportJobCalendar` which we receive as result of GET operation he
 ##Deleting an Exclusion Calendar
 Use the following method to delete a calendar by name.
 ```java
-OperationResult result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult result = session
         .jobsService()
         .calendar("testCalendar")
         .delete();
@@ -1785,8 +1739,7 @@ OperationResult result = client
 The export service works asynchronously: first you request the export with the desired options, then you monitor the state of the export, and finally you request the output file. You must be authenticated as the system admin (superuser)or jasperadmin for the export services.
 ```java
 OperationResult<State> operationResult =
-        client
-                .authenticate("jasperadmin", "jasperadmin")
+        session
                 .exportService()
                 .newTask()
                 .user("jasperadmin")
@@ -1845,8 +1798,7 @@ Also you can specify:
 After receiving the export ID, you can check the state of the export operation.
 ```java
 OperationResult<State> operationResult =
-        client
-                .authenticate("jasperadmin", "jasperadmin")
+        session
                 .exportService()
                 .task(state.getId())
                 .state();
@@ -1858,8 +1810,7 @@ The body of the response contains the current state of the export operation.
 When the export state is ready, you can download the zip file containing the export catalog.
 ```java
 OperationResult<InputStream> operationResult1 =
-        client
-                .authenticate("jasperadmin", "jasperadmin")
+        session
                 .exportService()
                 .task(state.getId())
                 .fetch();
@@ -1871,8 +1822,7 @@ Use the following service to upload a catalog as a zip file and import it with t
 ```java
 URL url = ImportService.class.getClassLoader().getResource("testExportArchive.zip");
 OperationResult<State> operationResult =
-        client
-                .authenticate("jasperadmin", "jasperadmin")
+        session
                 .importService()
                 .newTask()
                 .parameter(ImportParameter.INCLUDE_ACCESS_EVENTS, true)
@@ -1905,8 +1855,7 @@ Also you can set:
 After receiving the import ID, you can check the state of the import operation.
 ```java
 OperationResult<State> operationResult =
-        client
-                .authenticate("jasperadmin", "jasperadmin")
+        session
                 .importService()
                 .task(state.getId())
                 .state();
@@ -2113,8 +2062,7 @@ QueryResult queryResult = session.queryExecutorService()
 #Server Information Service
 Use the following service to verify the server information, the same as the `About JasperReports Server` link in the user interface.
 ```java
-OperationResult<ServerInfo> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<ServerInfo> result = session
         .serverInfoService()
         .details();
 
@@ -2123,8 +2071,7 @@ ServerInfo serverInfo = result.getEntity();
 The server returns a `ServerInfo` instance containing the requested information.
 You can access each value separately with the following code:
 ```java
-OperationResult<String> result = client
-        .authenticate("jasperadmin", "jasperadmin")
+OperationResult<String> result = session
         .serverInfoService()
         .edition();
         //.version();
@@ -2244,7 +2191,7 @@ jrs-rest-client uses the implementation of JAX-RS API of version 2.0 and if your
         <dependency>
             <groupId>com.jaspersoft</groupId>
             <artifactId>jrs-rest-java-client</artifactId>
-            <version>6.3.1</version>
+            <version>6.4.0</version>
         </dependency>
     </dependencies>
 
