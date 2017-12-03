@@ -355,7 +355,7 @@ result.getResponse.getStatus() // HTTP status code
 result.getResponse.getHeaderString("Total-Count") // get Total-Count header
 ```
 
-If you are using the default exception handling approach, outlined in [Exception Handling] (#exception-handling), you need to be checking the `getStatus()` as no exceptions will be raised if there are errors.
+If you are using the default exception handling approach, outlined in [Exception Handling](#exception-handling), you need to be checking the `getStatus()` as no exceptions will be raised if there are errors.
 
 In your use of this REST client, you should create a session and reuse it as much as possible in your application. This will maintain a user session in the JasperReports Server until you log the session out, or there is no activity on the session for the session expiry time configured on the server.
 
@@ -1029,7 +1029,7 @@ OperationResult<HypermediaAttributesListWrapper> attributes = session
                 .allAttributes()
                 .createOrUpdate(serverAttributes);
 ```
-Be careful with definition of attribute names because the server uses different strategies for creating or updating attributes depending on list of attribute names, list of attributes and existing attributes on the server (see section [Setting User Attributes] (#setting-user-attributes)).
+Be careful with definition of attribute names because the server uses different strategies for creating or updating attributes depending on list of attribute names, list of attributes and existing attributes on the server (see section [Setting User Attributes](#setting-user-attributes)).
 Or to create a single organization attribute code below:
 ```java
 HypermediaAttribute attribute = new HypermediaAttribute(new ClientTenantAttribute().setName("industry").setValue("IT"));
@@ -1095,7 +1095,7 @@ OperationResult<HypermediaAttributesListWrapper> attributes = session
                 .allAttributes()
                 .createOrUpdate(serverAttributes);
 ```
-Be careful with definition of attribute names because the server uses different strategies for creating or updating attributes depending on list of attribute names, list of attributes and existing attributes on the server (see section [Setting User Attributes] (#setting-user-attributes)).
+Be careful with definition of attribute names because the server uses different strategies for creating or updating attributes depending on list of attribute names, list of attributes and existing attributes on the server (see section [Setting User Attributes](#setting-user-attributes)).
 To create a single server attribute:
 ```java
 HypermediaAttribute attribute = new HypermediaAttribute(new ClientUserAttribute().setName("latency").setValue("5700"));
