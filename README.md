@@ -5,6 +5,7 @@ With this library, you can easily write Java applications which can interact wit
 
 # Table of Contents
 ------------------
+[Introduction](#introduction)
 1. [Getting the JasperReports Server REST Client library](#getting-the-jasperreports-server-rest-client-library).
 2. [Configuration](#configuration).
   * [Loading configuration from file](#loading-configuration-from-file).
@@ -122,14 +123,20 @@ With this library, you can easily write Java applications which can interact wit
 27. [Maven dependency to add jasperserver-rest-client to your app](#maven-dependency-to-add-jasperserver-rest-client-to-your-app).
 28. [License](#license).
 
+# Introduction
+-----------------
+With this client library, you can easily write Java applications which can interact with a JasperReports Server using the Server REST API, which is documented here: [TIBCO JasperReports Server REST API Reference](https://community.jaspersoft.com/documentation/tibco-jasperreports-server-rest-api-reference/v640/rest-api-overview). This library provides a very friendly, high level Java API, which is productive and will improve the quality of your applications accessing the JasperReports Server. 
+
 # Getting the JasperReports Server REST Client library
 -------------
-With this client library, you can easily write Java applications which can interact with  JasperReports Servers using the public REST API. This library provides a very friendly, high level API, which is productive and improve the quality of your applications accessing the JasperReports Server. To use the library in your Maven-based Java applications, you need to specify the dependency and repository which are given below or download jar file manually from:
+To use the library in your Maven-based Java applications, you need to specify the dependency and repository which are given below or download jar file manually from:
 ```
 http://jaspersoft.artifactoryonline.com/jaspersoft/repo/com/jaspersoft/jrs-rest-java-client/{version}/jrs-rest-java-client-{version}.jar
 ```
 
-You can also access the fork Sherman Wood has done at https://github.com/sgwood63/jrs-rest-java-client
+You can also access the fork Sherman Wood has done at https://github.com/sgwood63/jrs-rest-java-client and build from there.
+
+The only other dependency that may not be in all public Maven repositories is the jasperserver-dto project, which is part of the open source JasperReports Server Community edition.
 
 The JAR with full dependencies contains all you need to use this REST Client.
 
