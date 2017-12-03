@@ -19,6 +19,7 @@ With this library, you can easily write Java applications which can interact wit
 3. [Authentication](#authentication).
   * [Anonymous session](#anonymous-sessions).
   * [Invalidating session](#invalidating-sessions).
+4. [Using Sessions and Making Requests] (#using-sessions-and-making-requests).
 4. [Report services](#report-services).
   * [Running a report](#running-a-report).
   * [Requesting report execution status](#requesting-report-execution-status).
