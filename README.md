@@ -5,7 +5,7 @@ With this library, you can easily write Java applications which can interact wit
 
 # Table of Contents
 ------------------
-1. [Introduction](#introduction).
+1. [Getting the JasperReports Server REST Client library](#getting-the-jasperreports-server-rest-client-library).
 2. [Configuration](#configuration).
   * [Loading configuration from file](#loading-configuration-from-file).
   * [Creation of manual configuration](#creation-of-manual-configuration).
@@ -68,8 +68,7 @@ With this library, you can easily write Java applications which can interact wit
   * [Setting Role Membership](#setting-role-membership).
   * [Deleting a Role](#deleting-a-role).
 12. [The Settings Service](#settings-service).
-13. [Repository Services](#repository-services).
-14. [Resources Service](#resources-service).
+13. [Resources Service](#resources-service).
   * [Searching the Repository](#searching-the-repository).
   * [Viewing Resource Details](#viewing-resource-details).
   * [Downloading File Resources](#downloading-file-resources).
@@ -81,16 +80,16 @@ With this library, you can easily write Java applications which can interact wit
   * [Uploading MondrianConnection](#uploading-mondrianconnection).
   * [Uploading SecureMondrianConnection](#uploading-securemondrianconnection).
   * [Uploading ReportUnit](#uploading-reportunit).
-  * [Uploading File Resources](#uploading-file-resources).
+  * [Creating and Updating File and InputStream Resources](#creating-and-updating-file-and-inputstream-resources).
   * [Deleting Resources](#deleting-resources).
-15. [The Permissions Service](#the-permissions-service).
+14. [The Permissions Service](#the-permissions-service).
   * [Viewing Multiple Permissions](#viewing-multiple-permissions).
   * [Viewing a Single Permission](#viewing-a-single-permission).
   * [Setting Multiple Permissions](#setting-multiple-permissions).
   * [Setting a Single Permission](#setting-a-single-permission).
   * [Deleting Permissions in Bulk](#deleting-permissions-in-bulk).
   * [Deleting a Single Permission](#deleting-a-single-permission).
-16. [Jobs service](#jobs-service).
+15. [Jobs service](#jobs-service).
   * [Listing Report Jobs](#listing-report-jobs).
   * [Viewing a Job Definition](#viewing-a-job-definition).
   * [Extended Job Search](#extended-job-search).
@@ -101,27 +100,27 @@ With this library, you can easily write Java applications which can interact wit
   * [Pausing Jobs](#pausing-jobs).
   * [Resuming Jobs](#resuming-jobs).
   * [Restarting Failed Jobs](#restarting-failed-jobs).
-17. [Calendars service](#calendars-service).
+16. [Calendars service](#calendars-service).
   * [Listing All Registered Calendar Names](#listing-all-registered-calendar-names).
   * [Viewing an Exclusion Calendar](#viewing-an-exclusion-calendar).
   * [Adding or Updating an Exclusion Calendar](#adding-or-updating-an-exclusion-calendar).
   * [Deleting an Exclusion Calendar](#deleting-an-exclusion-calendar).
-18. [Export service](#export-service).
+17. [Export service](#export-service).
   * [Checking the Export Task](#checking-the-export-task).
   * [Fetching the Export Output](#fetching-the-export-output).
-19. [Import service](#import-service).
+18. [Import service](#import-service).
   * [Checking the Import Task](#checking-the-import-task).
   * [Managing the Import Task](#managing-the-import-task). 
-20. [Domain metadata service](#domainmetadata-service).
-21. [Thumbnail Search Service](#thumbnail-search-service).
-22. [Diagnostic Service](#diagnostic-service).
-23. [Query Executor Service](#query-executor-service).
-24. [Server Information Service](#server-information-service).
-25. [Bundles service](#bundles-service).
-26. [Asynchronous API](#asynchronous-api).
-27. [Possible issues](#possible-issues).
-28. [Maven dependency to add jasperserver-rest-client to your app](#maven-dependency-to-add-jasperserver-rest-client-to-your-app).
-29. [License](#license).
+19. [Domain metadata service](#domainmetadata-service).
+20. [Thumbnail Search Service](#thumbnail-search-service).
+21. [Diagnostic Service](#diagnostic-service).
+22. [Query Executor Service](#query-executor-service).
+23. [Server Information Service](#server-information-service).
+24. [Bundles service](#bundles-service).
+25. [Asynchronous API](#asynchronous-api).
+26. [Possible issues](#possible-issues).
+27. [Maven dependency to add jasperserver-rest-client to your app](#maven-dependency-to-add-jasperserver-rest-client-to-your-app).
+28. [License](#license).
 
 # Getting the JasperReports Server REST Client library
 -------------
@@ -132,7 +131,7 @@ http://jaspersoft.artifactoryonline.com/jaspersoft/repo/com/jaspersoft/jrs-rest-
 
 You can also access the fork Sherman Wood has done at https://github.com/sgwood63/jrs-rest-java-client
 
-The JAR with full dependencies contains all you need.
+The JAR with full dependencies contains all you need to use this REST Client.
 
 
 # Configuration
@@ -1030,7 +1029,7 @@ OperationResult<HypermediaAttributesListWrapper> attributes = session
                 .allAttributes()
                 .createOrUpdate(serverAttributes);
 ```
-Be careful with definition of attribute names because the server uses different strategies for creating or updating attributes depending on list of attribute names, list of attributes and existing attributes on the server (see section [Setting User Attributes] (https://github.com/Jaspersoft/jrs-rest-java-client#setting-user-attributes)).
+Be careful with definition of attribute names because the server uses different strategies for creating or updating attributes depending on list of attribute names, list of attributes and existing attributes on the server (see section [Setting User Attributes] (#setting-user-attributes)).
 Or to create a single organization attribute code below:
 ```java
 HypermediaAttribute attribute = new HypermediaAttribute(new ClientTenantAttribute().setName("industry").setValue("IT"));
@@ -1096,7 +1095,7 @@ OperationResult<HypermediaAttributesListWrapper> attributes = session
                 .allAttributes()
                 .createOrUpdate(serverAttributes);
 ```
-Be careful with definition of attribute names because the server uses different strategies for creating or updating attributes depending on list of attribute names, list of attributes and existing attributes on the server (see section [Setting User Attributes] (https://github.com/TanyaEf/jrs-rest-java-client#setting-user-attributes)).
+Be careful with definition of attribute names because the server uses different strategies for creating or updating attributes depending on list of attribute names, list of attributes and existing attributes on the server (see section [Setting User Attributes] (#setting-user-attributes)).
 To create a single server attribute:
 ```java
 HypermediaAttribute attribute = new HypermediaAttribute(new ClientUserAttribute().setName("latency").setValue("5700"));
@@ -1268,7 +1267,7 @@ Response response = operationResult.getResponse();
 ```
 ## Setting Role Membership
 To assign role membership to a user, set the roles property on the user account with the PUT method of the rest_
-v2/users service. For details, see section [creating a user](https://github.com/Jaspersoft/jrs-rest-java-client/blob/master/README.md#creating-a-user).
+v2/users service. For details, see section [creating a user](#creating-a-user).
 ## Deleting a Role
 To delete a role, send the DELETE method and specify the role ID (name) in the URL.
 When this method is successful, the role is permanently deleted.
@@ -1364,10 +1363,11 @@ OperationResult<DateTimeSettings> ofDateTimeGroup();
 OperationResult<InputControlsSettings> ofInputControlsGroup();
 ```
 
-Repository Services
-=====================
-## Resources Service
-This new service provides greater performance and more consistent handling of resource descriptors for all repository resource types. The service has two formats, one takes search parameters to find resources, the other takes a repository URI to access resource descriptors and file contents.
+# Resources Service
+This service provides consistent handling of resource descriptors for all repository resource types. The service has two formats.
+- Using search parameters to find resources
+- Using a repository URI to access resource descriptors and file contents
+
 ## Searching the Repository
 The resources service, accessed by the `resources()` method, is used to search the repository. The various parameters let you refine the search and specify how you receive search results. Search results are limited to the resources the session user has at least read access to.
 
@@ -1439,7 +1439,7 @@ There are two operations on file resources:
 * Viewing the file resource details to determine the file format
 * Downloading the binary file contents
 
-To view the file resource details, specify the URL of the file in `resource()` method and use the code form [Viewing Resource Details](https://github.com/Jaspersoft/jrs-rest-java-client/blob/master/README.md#viewing-resource-details) section.
+To view the file resource details, specify the URL of the file in `resource()` method and use the code form [Viewing Resource Details](#viewing-resource-details) section.
 To download file binary content, specify the URL of the file in `resource()` method and use the code below
 ```java
 OperationResult<InputStream> result = session
@@ -1504,13 +1504,37 @@ OperationResult<ClientResource> result = session
         .resource("/datasources")
         .moveFrom("/reports/testFolder");
 ```
-## Uploading File Resources
-To upload file you must specify the MIME type that corresponds with the desired file type, you can take it from `ClientFile.FileType` enumeration.
+## Creating and Updating File and InputStream Resources
+You must specify the MIME type that corresponds with the desired file type, you can take it from `ClientFile.FileType` enumeration.
 ```java
+// Using multi-part form
 OperationResult<ClientFile> result = session
         .resourcesService()
-        .resource("/reports/testFolder")
+        .resource("/reports/testFolder/test.png")
         .uploadFile(imageFile, ClientFile.FileType.img, "fileName", "fileDescription");
+        
+// OR
+// Using body post
+OperationResult result = session
+    .resourcesService()
+    .resource("/reports/testFolder/test.png")
+    .createContentFile(tempFile, FileType.png, file.getLabel(), file.getDescription());
+
+OperationResult result = session
+    .resourcesService()
+    .resource("/reports/testFolder/test.jrxml")
+    .createContentInputStream(inputStream, FileType.jrxml, file.getLabel(), file.getDescription());
+
+OperationResult result = session
+    .resourcesService()
+    .resource("/reports/testFolder/test.png")
+    .updateContentFile(tempFile, FileType.png, file.getLabel(), file.getDescription());
+
+OperationResult result = session
+    .resourcesService()
+    .resource("/reports/testFolder/test.jrxml")
+    .updateContentInputStream(inputStream, FileType.jrxml, file.getLabel(), file.getDescription());
+
 ```
 ## Uploading SemanticLayerDataSource
 RestClient also supports a way to create complex resources and their nested resources in a single multipart request. One of such resources is `SemanticLayerDataSource`.  
