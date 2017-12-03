@@ -19,8 +19,8 @@ With this library, you can easily write Java applications which can interact wit
 3. [Authentication](#authentication).
   * [Anonymous session](#anonymous-sessions).
   * [Invalidating session](#invalidating-sessions).
-4. [Using Sessions and Making Requests] (#using-sessions-and-making-requests).
-4. [Report services](#report-services).
+4. [Using Sessions and Making Requests](#using-sessions-and-making-requests).
+5. [Report services](#report-services).
   * [Running a report](#running-a-report).
   * [Requesting report execution status](#requesting-report-execution-status).
   * [Requesting report execution details](#requesting-report-execution-details).
@@ -30,25 +30,25 @@ With this library, you can easily write Java applications which can interact wit
   * [Polling Export Execution](#polling-export-execution).
   * [Finding Running Reports and Jobs](#finding-running-reports-and-jobs).
   * [Stopping Running Reports and Jobs](#stopping-running-reports-and-jobs).
-5. [Input controls service](#input-controls-services).
+6. [Input controls service](#input-controls-services).
   * [Listing input controls structure](#listing-input-controls-structure).
   * [Reordering input controls structure](#reordering-input-controls-structure).
   * [Listing input controls values](#listing-input-controls-values).
   * [Setting input controls values](#setting-input-controls-values).
-6. [Administration services](#administration-services).
-7. [Organizations service](#organizations-service).
+7. [Administration services](#administration-services).
+8. [Organizations service](#organizations-service).
   * [Searching for Organizations](#searching-for-organizations).
   * [Viewing an Organization](#viewing-an-organization).
   * [Creating an Organization](#creating-an-organization).
   * [Modifying Organization Properties](#modifying-organization-properties).
   * [Deleting an Organization](#deleting-an-organization).
-8. [Users service](#users-service).
+9. [Users service](#users-service).
   * [Searching for Users](#searching-for-users).
   * [Viewing a User](#viewing-a-user).
   * [Creating a User](#creating-a-user).
   * [Modifying User Properties](#modifying-user-properties).
   * [Deleting a User](#deleting-a-user).
-9. [Attributes service](#attributes-service).
+10. [Attributes service](#attributes-service).
   * [Viewing User Attributes](#viewing-user-attributes).
   * [Setting User Attributes](#setting-user-attributes).
   * [Deleting User Attributes](#deleting-user-attributes).
@@ -60,16 +60,16 @@ With this library, you can easily write Java applications which can interact wit
   * [Deleting Server Attributes](#deleting-server-attributes).
   * [Getting attributes permissions](#getting-attributes-permissions).
   * [Searching attributes ](#searching-attributes).
-10. [The Roles Service](#the-roles-service).
+11. [The Roles Service](#the-roles-service).
   * [Searching for Roles](#searching-for-roles).
   * [Viewing a Role](#viewing-a-role).
   * [Creating a Role](#creating-a-role).
   * [Modifying a Role](#modifying-a-role).
   * [Setting Role Membership](#setting-role-membership).
   * [Deleting a Role](#deleting-a-role).
-11. [The Settings Service](#settings-service).
-12. [Repository Services](#repository-services).
-13. [Resources Service](#resources-service).
+12. [The Settings Service](#settings-service).
+13. [Repository Services](#repository-services).
+14. [Resources Service](#resources-service).
   * [Searching the Repository](#searching-the-repository).
   * [Viewing Resource Details](#viewing-resource-details).
   * [Downloading File Resources](#downloading-file-resources).
@@ -83,14 +83,14 @@ With this library, you can easily write Java applications which can interact wit
   * [Uploading ReportUnit](#uploading-reportunit).
   * [Uploading File Resources](#uploading-file-resources).
   * [Deleting Resources](#deleting-resources).
-14. [The Permissions Service](#the-permissions-service).
+15. [The Permissions Service](#the-permissions-service).
   * [Viewing Multiple Permissions](#viewing-multiple-permissions).
   * [Viewing a Single Permission](#viewing-a-single-permission).
   * [Setting Multiple Permissions](#setting-multiple-permissions).
   * [Setting a Single Permission](#setting-a-single-permission).
   * [Deleting Permissions in Bulk](#deleting-permissions-in-bulk).
   * [Deleting a Single Permission](#deleting-a-single-permission).
-15. [Jobs service](#jobs-service).
+16. [Jobs service](#jobs-service).
   * [Listing Report Jobs](#listing-report-jobs).
   * [Viewing a Job Definition](#viewing-a-job-definition).
   * [Extended Job Search](#extended-job-search).
@@ -101,27 +101,27 @@ With this library, you can easily write Java applications which can interact wit
   * [Pausing Jobs](#pausing-jobs).
   * [Resuming Jobs](#resuming-jobs).
   * [Restarting Failed Jobs](#restarting-failed-jobs).
-16. [Calendars service](#calendars-service).
+17. [Calendars service](#calendars-service).
   * [Listing All Registered Calendar Names](#listing-all-registered-calendar-names).
   * [Viewing an Exclusion Calendar](#viewing-an-exclusion-calendar).
   * [Adding or Updating an Exclusion Calendar](#adding-or-updating-an-exclusion-calendar).
   * [Deleting an Exclusion Calendar](#deleting-an-exclusion-calendar).
-17. [Export service](#export-service).
+18. [Export service](#export-service).
   * [Checking the Export Task](#checking-the-export-task).
   * [Fetching the Export Output](#fetching-the-export-output).
-18. [Import service](#import-service).
+19. [Import service](#import-service).
   * [Checking the Import Task](#checking-the-import-task).
   * [Managing the Import Task](#managing-the-import-task). 
-11. [Domain metadata service](#domainmetadata-service).
-12. [Thumbnail Search Service](#thumbnail-search-service).
-13. [Diagnostic Service](#diagnostic-service).
-14. [Query Executor Service](#query-executor-service).
-15. [Server Information Service](#server-information-service).
-16. [Bundles service](#bundles-service).
-17. [Asynchronous API](#asynchronous-api).
-18. [Possible issues](#possible-issues).
-19. [Maven dependency to add jasperserver-rest-client to your app](#maven-dependency-to-add-jasperserver-rest-client-to-your-app).
-20. [License](#license).
+20. [Domain metadata service](#domainmetadata-service).
+21. [Thumbnail Search Service](#thumbnail-search-service).
+22. [Diagnostic Service](#diagnostic-service).
+23. [Query Executor Service](#query-executor-service).
+24. [Server Information Service](#server-information-service).
+25. [Bundles service](#bundles-service).
+26. [Asynchronous API](#asynchronous-api).
+27. [Possible issues](#possible-issues).
+28. [Maven dependency to add jasperserver-rest-client to your app](#maven-dependency-to-add-jasperserver-rest-client-to-your-app).
+29. [License](#license).
 
 # Getting the JasperReports Server REST Client library
 -------------
