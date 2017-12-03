@@ -110,12 +110,11 @@ public enum ResourceSearchParameter {
     FORCE_TOTAL_COUNT("forceTotalCount"),
 
     /**
-     * Specifies a resources inFolder delete. Repeat this paramter inFolder delete multiple
-     * resources.
+     * Optional. Forces all result pages to have the LIMIT number of results.
      *
-     * Type/Value: String
+     * Type/Value: true|false. 
      */
-    RESOURCE_URI("resourceUri")
+    FORCE_FULL_PAGE("forceFullPage")
 
     ;
 

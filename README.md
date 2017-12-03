@@ -3,7 +3,7 @@ Rest Client for JasperReports Server [![Build Status](https://travis-ci.org/Jasp
 
 With this library, you can easily write Java applications which can interact with JasperReports Servers  through a friendly REST API, allowing the automation of interactive and administrative tasks.
 
-#Table of Contents
+# Table of Contents
 ------------------
 1. [Introduction](#introduction).
 2. [Configuration](#configuration).
@@ -123,21 +123,21 @@ With this library, you can easily write Java applications which can interact wit
 20. [Maven dependency to add jasperserver-rest-client to your app](#maven-dependency-to-add-jasperserver-rest-client-to-your-app).
 21. [License](#license).
 
-#Introduction
+# Introduction
 -------------
 With this library you can easily write Java applications which can interact with one or more JasperReports servers simultaneously in a very simple way. Library provides very friendly API for user, it minimizes possibility of building wrong requests. To use library in your maven-based application you need just to specify dependency and repository which are given below or download jar file manually from
 ```
 http://jaspersoft.artifactoryonline.com/jaspersoft/repo/com/jaspersoft/jrs-rest-java-client/{version}/jrs-rest-java-client-{version}.jar
 ```
 
-#Configuration
+# Configuration
 -------------
 To start working with the library you should firstly configure one ore more instances of `JasperserverRestClient`.
 To do this you should create instance of `RestClientConfiguration`. It can be done in two ways:
 - loading configuration from file;
 - creation of manual configuration in java code.
 
-##Loading configuration from file:
+## Loading configuration from file:
 ```java
 RestClientConfiguration configuration = RestClientConfiguration.loadConfiguration("configuration.properties");
 ```
@@ -160,13 +160,13 @@ acceptMimeType=JSON
 File must contain at least URL which is entry point to your server's REST services and it is needed to URL  corresponds to this pattern `{protocol}://{host}:{port}/{contextPath}`.
 Please notice, configuration settings may be changed after loading manually in java code.
 
-##Creation of manual configuration
+## Creation of manual configuration
 To configure `JasperserverRestClient` manually, use the constructor of `RestClientConfiguration` and properties:
 ```java
 RestClientConfiguration configuration = new RestClientConfiguration("http://localhost:8080/jasperserver");
 configuration.setAcceptMimeType(MimeType.JSON).setContentMimeType(MimeType.JSON).setJrsVersion(JRSVersion.v6_0_0).setLogHttp(true);
 ```
-##HTTPS configuration
+## HTTPS configuration
 **To use HTTPS you need:**
  1. Configure your server to support HTTPS
  2. Download [InstallCert](http://miteff.com/files/InstallCert-bin.zip) util and follow  [InstallCert-Guide](http://www.mkyong.com/webservices/jax-ws/suncertpathbuilderexception-unable-to-find-valid-certification-path-to-requested-target/) instructions.
@@ -180,7 +180,7 @@ TrustManager[] trustManagers = new TrustManager[1];
 trustManagers[0] = x509TrustManager;
 configuration.setTrustManagers(trustManagers);
 ```
-##X-HTTP-Method override
+## X-HTTP-Method override
 When your proxies or web services do not support arbitrary HTTP methods or newer HTTP methods, you can use “restricted mode”. In this mode `JaperserverRestClient` sends requests through POST method and set the `X-HTTP-Method-Override` header with value of intended HTTP method. To use this mode you should set flag `RestrictedHttpMethods`:
 ```java
 configuration.setRestrictedHttpMethods(true);
@@ -190,7 +190,7 @@ Or in configuration file:
 restrictedHttpMethods=false
 ````
 If you do not use the "restricted mode", POST or GET methods and server returns  the response with 411 error code, `JaperserverRestClient` resend this request through POST method with the X-HTTP-Method-Override header automatically.
-##Exception handling
+## Exception handling
 You can choose strategy of errors that are specified by status code of server response:
 1. handling of errors directly. This mode is allowed by default.
 2. getting operation result in any case with null entity and handling error after calling `getEntity()` method:
@@ -234,7 +234,8 @@ logHttp=true
 logHttpEntity=true
 ```
 ##Switching between JSON and XML
-You can configure a client to make request either with JSON or XML content.
+You can configure a client to send requests and receive responses in either with JSON or XML. The default is JSON.
+
 ```java
 RestClientConfiguration configuration = new RestClientConfiguration("http://localhost:4444/jasperserver");
 configuration.setContentMimeType(MimeType.XML);
@@ -256,14 +257,14 @@ JasperserverRestClient client = new JasperserverRestClient(configuration);
 
 #Authentication
 ---------------
-This library automatically encrypts your password before send it if encryption is on, so to authenticate you need just specify login and password (not encrypted) in `authenticate()` method.
+This library automatically encrypts your password if password encryption has been configured on the target JasperReports Server, so to authenticate you need just specify login and password (not encrypted) in `authenticate()` method.
 ```java
 Session session = client.authenticate("jasperadmin", "jasperadmin");
 
-//authentication with multitenancy enabled
+//authentication with multi-tenancy
 Session session = client.authenticate("jasperadmin|organization_1", "jasperadmin");
 ```
-If you need to set user time zone different from default system timezone (for example, for running reports) use the code below:
+If you need to set user time zone different from the default system timezone (for example, for running reports) use the code below:
 ```java
 Session session = client.authenticate("jasperadmin", "jasperadmin", TimeZone.getTimeZone("America/Los_Angeles"));
 // or
@@ -277,7 +278,7 @@ Session session = client.authenticate("jasperadmin", "jasperadmin", "de", Americ
 ```
 ##Switching authentication type
 `JasperserverRestClient` supports two authentication types: SPRING and BASIC. 
-`SPRING` type of authentication means that your credentials are sent as a form  to `/j_security_check directly/` uri. Using these types you obtain JSESSIONID cookie of authenticated session after sending credentials.
+`SPRING` type of authentication means that your credentials are sent as a form  to `/j_security_check directly/` uri. You obtain a JSESSIONID cookie of the authenticated session after sending credentials.
 In the `BASIC` mode `JasperserverRestClient` uses basic authentication (sends encrypted credentials with each request).
 Client uses `SPRING` authentication by default but you can specify authentication type in RestClientConfiguration instance:
 ```java
@@ -289,27 +290,72 @@ Or set authentication type in configuration file:
  or
  authenticationType=BASIC
  ```
-Please notice, the basic authentication is not stateless and it is valid till method logout() is called or the application is restarted and you can not use this authentication type for Report Service, because all operations must be executed in the same session (for details, read section [Report services](https://github.com/Jaspersoft/jrs-rest-java-client/blob/master/README.md#report-services)).
+Please note that basic authentication is stateless and will create a new session on the JasperReports Server for every request, which is very inefficient. Also, you can not use BASIC authentication for services that have multiple requests that must be executed in the same session. For example, read the section [Report services](#report-services).
+
 ##Anonymous sessions
-For some JasperReports Server services, authentication is not required (for example, settings service, bundles service or server info service), so you can use anonymous session:
+For some JasperReports Server services, authentication is not required (for example, settings service, bundles service or server info service), so you can use an anonymous session:
  ```java
 AnonymousSession session = client.getAnonymousSession();
 ```
-##Invalidating sessions
-Not to store session on server you can invalidate it with `logout()` method.
+## Invalidating sessions
+You can invalidate the server session with a `logout()`.
 ```java
 session.logout();
 ```
 
+# Using Sessions and making requests
+
+The session is the gateway for sending REST requests to the JasperReports Server. For example, here is how to run a report and get the content in one request:
+
+```java
+OperationResult<InputStream> result = session
+        .reportingService()
+        .report("/reports/samples/Cascading_multi_select_report")
+        .prepareForRun(ReportOutputFormat.HTML, 1)
+        .parameter("Cascading_name_single_select", "A & U Stalker Telecommunications, Inc")
+        .run();
+InputStream report = result.getEntity();
+```
+
+The result has `result.getEntity()` which is the body of the response. The type of the response can be seen in the class returned by the call, like `OperationResult<InputStream>` above. This Java REST client framework has mapping logic to convert response bodies to JasperReports Server Java objects (data transfer objects - "DTOs"), so that you have easy access to the information in your Java application. These DTO classes are also used to send information to the server, like this to create a folder:
+
+```java
+ClientFolder folder = new ClientFolder();
+String parentUri = "/reports";
+folder
+        .setUri("/reports/testFolder")
+        .setLabel("Test Folder")
+        .setDescription("Test folder description")
+        .setPermissionMask(0)
+        .setCreationDate("2014-01-24 16:27:47")
+        .setUpdateDate("2014-01-24 16:27:47")
+        .setVersion(0);
+
+OperationResult<ClientResource> session
+        .resourcesService()
+        .resource(folder.getUri())
+        .createOrUpdate(folder);    
+```
+
+
+There is also `result.getResponse()`, a `javax.ws.rs.core.Response` object which contains the HTTP response to the request. These can be used to check the results of the request., get cookies etc.
+
+```java
+result.getResponse.getStatus() // HTTP status code
+
+result.getResponse.getHeaderString("Total-Count") // get Total-Count header
+```
+
+If you are using the default exception handling approach, outlined in [Exception Handling] (#exception_handling), you need to be checking the `getStatus()` as no exceptions will be raised if there are errors.
+
+In your use of this REST client, you should create a session and reuse it as much as possible in your application. This will maintain a user session in the JasperReports Server until you log the session out, or there is no activity on the session for the session expiry time configured on the server.
+
+
+
 
 Report services
 ===============
-After you've configured the client you can easily use any of available services. For reporting service there is one feature that should be noted - when you are running a report all subsequent operations must be executed in the same session. Here's the code:
-```java
-Session session = client.authenticate("jasperadmin", "password");
-```
-We've authenticated as `jasperadmin` user an got a session for this user, all subsequent operations must be done through this session instance.
-##Running a report
+## Running a report
 There are two approaches to run a report - in synchronous and asynchronous modes.
 To run report in synchronous mode you use:
 ```java
@@ -1313,14 +1359,9 @@ Repository Services
 ##Resources Service
 This new service provides greater performance and more consistent handling of resource descriptors for all repository resource types. The service has two formats, one takes search parameters to find resources, the other takes a repository URI to access resource descriptors and file contents.
 ##Searching the Repository
-The resources service, when `resources()` method used without specifying any repository URI, is used to search the repository. The various parameters let you refine the search and specify how you receive search results.
+The resources service, accessed by the `resources()` method, is used to search the repository. The various parameters let you refine the search and specify how you receive search results. Search results are limited to the resources the session user has at least read access to.
+
 ```java
-OperationResult<ClientResourceListWrapper> result = session
-        .resourcesService()
-        .resources()
-        .search();
-ClientResourceListWrapper resourceListWrapper = result.getEntity();
-//OR
 OperationResult<ClientResourceListWrapper> result = session
         .resourcesService()
         .resources()
@@ -1329,7 +1370,52 @@ OperationResult<ClientResourceListWrapper> result = session
         .search();
 ClientResourceListWrapper resourceListWrapper = result.getEntity();
 ```
-The response of a search is a set of shortened descriptors showing only the common attributes of each resource. One additional attribute specifies the type of the resource. This allows you to quickly receive a list of resources for display or further processing.
+
+The result of a search is a set of descriptors (ClientResourceLookup) showing the common attributes of each resource, including the type of the resource.
+
+Parameters
+
+| Search Parameter | Value passed |
+| ---------------- | ------------ |
+| `ResourceSearchParameter.Q` | String to find in names and descriptions |
+| `ResourceSearchParameter.FOLDER_URI` | URI of a folder to search. Defaults to top level folder "/" |
+| `ResourceSearchParameter.RECURSIVE` | Optional. true (default)/false. Search given folder and sub folders. false: Only search given folder |
+| `ResourceSearchParameter.TYPE` | Optional. The type of resource - "resourceType in resourceDescriptors" - to search. See JasperReports Server REST documentation for the allowable types. Invalid types are ignored. Multiple types can be added to the one search. |
+| `ResourceSearchParameter.ACCESS_TYPE` | Optional. Filters the results by whether the resources were "viewed" or "modified" by the session user. |
+| `ResourceSearchParameter.SHOW_HIDDEN_ITEMS` | Optional. true/false. Default: false. Results include nested local resources (in _files) as if they were in the repository. |
+| `ResourceSearchParameter.SORT_BY` | Optional. Sort by: uri, label, description, type, creationDate, updateDate, or, based on access events, popularity or accessTime. Default: results are sorted alphabetically by label. |
+| `ResourceSearchParameter.LIMIT` | Optional. Maximum number of results to return or limit in a page. Default 100. Set to 0 to get all results. See Pagination below. |
+| `ResourceSearchParameter.OFFSET` | Optional. Positive integer. Starting point to retrieve a page of results. See Pagination below. |
+| `ResourceSearchParameter.FORCE_TOTAL_COUNT` | Optional. true/false. Force Total-Count in all response headers. Otherwise Total-Count is only returned on the first request. See Pagination below. |
+| `ResourceSearchParameter.FORCE_FULL_PAGE` | Optional. true/false. Force each page to return the LIMIT number of results. See Pagination below. |
+
+
+Pagination
+
+The `search()` method will return a "page" of results. The default page size is 100, overridden by the LIMIT parameter.
+
+To get all results in one request, add:
+`parameter(ResourceSearchParameter.LIMIT, "0")` or use the `searchAll()` method instead of `search()`. `searchAll()` uses default pagination to efficiently get the search results.
+
+If `ResourceSearchParameter.FORCE_FULL_PAGE` is not set, even if `LIMIT` is, the number of results in each page will vary because of security filtering. Also, because of security filtering, the Total-Count header value is not reliable.
+
+So to paginate:
+
+1. On initial request
+  - set the `LIMIT` or use the default of 100
+  - `FORCE_FULL_PAGE` can be set but is slow.
+
+2. Search and process the results.
+
+3. If `FORCE_FULL_PAGE` is set and the results are less than the `LIMIT`, then there are no more results.
+
+4. Otherwise
+   - Set the `OFFSET` in the next search request to be (Start-Index + Result-Count) from the response headers.
+   - Search and process again.
+
+5. Continue until you get a 204 No Content response.
+
+
 ##Viewing Resource Details
 Use the `resource()` method and a resource URI with `details()` method to request the resource's complete descriptor.
 ```java
