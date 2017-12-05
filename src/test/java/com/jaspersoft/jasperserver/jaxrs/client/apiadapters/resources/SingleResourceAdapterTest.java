@@ -360,7 +360,7 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
         SingleResourceAdapter adapter = new SingleResourceAdapter(sessionStorageMock, resourceUri);
 
         /** When **/
-        OperationResult<? extends ClientResource> retrieved = adapter.details();
+        OperationResult<ClientResource> retrieved = adapter.details();
 
         /** Then **/
         assertNotNull(retrieved);
@@ -390,7 +390,7 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
         SingleResourceAdapter adapter = new SingleResourceAdapter(sessionStorageMock, resourceUri);
 
         /** When **/
-        OperationResult<? extends ClientResource> retrieved = adapter.details();
+        OperationResult<ClientResource> retrieved = adapter.details();
 
         /** Then **/
         assertNotNull(retrieved);
@@ -618,10 +618,10 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
         final AtomicInteger newThreadId = new AtomicInteger();
         final int currentThreadId = (int) Thread.currentThread().getId();
 
-        final Callback<OperationResult<? extends ClientResource>, Void> callback =
-                spy(new Callback<OperationResult<? extends ClientResource>, Void>() {
+        final Callback<OperationResult<ClientResource>, Void> callback =
+                spy(new Callback<OperationResult<ClientResource>, Void>() {
                     @Override
-                    public Void execute(OperationResult<? extends ClientResource> data) {
+                    public Void execute(OperationResult<ClientResource> data) {
                         newThreadId.set((int) Thread.currentThread().getId());
                         synchronized (this) {
                             this.notify();
@@ -668,9 +668,9 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
                 eq(new String[]{"resources", resourceUri}), any(DefaultErrorHandler.class))).thenReturn(jerseyRequestMock);
         doReturn(operationResultMock).when(jerseyRequestMock).put("");
 
-        final Callback<OperationResult<? extends ClientResource>, Void> callback = Mockito.spy(new Callback<OperationResult<? extends ClientResource>, Void>() {
+        final Callback<OperationResult<ClientResource>, Void> callback = Mockito.spy(new Callback<OperationResult<ClientResource>, Void>() {
             @Override
-            public Void execute(OperationResult<? extends ClientResource> data) {
+            public Void execute(OperationResult<ClientResource> data) {
                 newThreadId.set((int) Thread.currentThread().getId());
                 synchronized (this) {
                     this.notify();
@@ -719,9 +719,9 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
                 any(DefaultErrorHandler.class))).thenReturn(jerseyRequestMock);
         doReturn(operationResultMock).when(jerseyRequestMock).post(null);
 
-        final Callback<OperationResult<? extends ClientResource>, Void> callback = Mockito.spy(new Callback<OperationResult<? extends ClientResource>, Void>() {
+        final Callback<OperationResult<ClientResource>, Void> callback = Mockito.spy(new Callback<OperationResult<ClientResource>, Void>() {
             @Override
-            public Void execute(OperationResult<? extends ClientResource> data) {
+            public Void execute(OperationResult<ClientResource> data) {
                 newThreadId.set((int) Thread.currentThread().getId());
                 synchronized (this) {
                     this.notify();
@@ -777,10 +777,10 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
         final AtomicInteger newThreadId = new AtomicInteger();
         final int currentThreadId = (int) Thread.currentThread().getId();
 
-        final Callback<OperationResult<? extends ClientResource>, Void> callback =
-                spy(new Callback<OperationResult<? extends ClientResource>, Void>() {
+        final Callback<OperationResult<ClientResource>, Void> callback =
+                spy(new Callback<OperationResult<ClientResource>, Void>() {
                     @Override
-                    public Void execute(OperationResult<? extends ClientResource> data) {
+                    public Void execute(OperationResult<ClientResource> data) {
                         newThreadId.set((int) Thread.currentThread().getId());
                         synchronized (this) {
                             this.notify();
@@ -834,7 +834,7 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
 
 
         /** When **/
-        OperationResult<? extends ClientResource> retrieved = adapter.createNew(source);
+        OperationResult<ClientResource> retrieved = adapter.createNew(source);
 
 
         /** Then **/
@@ -869,7 +869,7 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
 
 
         /** When **/
-        OperationResult<? extends ClientResource> retrieved = adapter.createOrUpdate(source);
+        OperationResult<ClientResource> retrieved = adapter.createOrUpdate(source);
 
 
         /** Then **/
@@ -943,7 +943,7 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
 
 
         /** When **/
-        OperationResult<? extends ClientResource> retrieved = adapter.moveFrom("fromUri");
+        OperationResult<ClientResource> retrieved = adapter.moveFrom("fromUri");
 
 
         /** Then **/
@@ -972,7 +972,7 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
 
 
         /** When **/
-        OperationResult<? extends ClientResource> retrieved = adapter.copyFrom("fromUri");
+        OperationResult<ClientResource> retrieved = adapter.copyFrom("fromUri");
 
 
         /** Then **/
