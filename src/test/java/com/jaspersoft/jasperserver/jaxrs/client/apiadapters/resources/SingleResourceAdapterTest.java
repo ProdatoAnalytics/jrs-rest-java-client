@@ -16,15 +16,6 @@ import com.jaspersoft.jasperserver.jaxrs.client.core.SessionStorage;
 import com.jaspersoft.jasperserver.jaxrs.client.core.enums.MimeType;
 import com.jaspersoft.jasperserver.jaxrs.client.core.exceptions.handling.DefaultErrorHandler;
 import com.jaspersoft.jasperserver.jaxrs.client.core.operationresult.OperationResult;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.mockito.ArgumentCaptor;
@@ -39,6 +30,14 @@ import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
+import java.io.File;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.jaspersoft.jasperserver.dto.resources.ClientFile.FileType;
 import static com.jaspersoft.jasperserver.jaxrs.client.core.JerseyRequest.buildRequest;
@@ -869,7 +868,7 @@ public class SingleResourceAdapterTest extends PowerMockTestCase {
 
 
         /** When **/
-        OperationResult<ClientResource> retrieved = adapter.createOrUpdate(source);
+        OperationResult<ClientVirtualDataSource> retrieved = adapter.createOrUpdate(source);
 
 
         /** Then **/
