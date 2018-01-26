@@ -31,6 +31,7 @@ import com.jaspersoft.jasperserver.jaxrs.client.core.SessionStorage;
 import com.jaspersoft.jasperserver.jaxrs.client.core.ThreadPoolUtil;
 import com.jaspersoft.jasperserver.jaxrs.client.core.exceptions.handling.DefaultErrorHandler;
 import com.jaspersoft.jasperserver.jaxrs.client.core.operationresult.OperationResult;
+
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -42,15 +43,20 @@ public class BatchResourcesAdapter extends AbstractAdapter {
 
     public BatchResourcesAdapter(SessionStorage sessionStorage) {
         super(sessionStorage);
-        this.params = new MultivaluedHashMap<String, String>();
+        this.params = new MultivaluedHashMap<>();
     }
 
-    public BatchResourcesAdapter parameter(ResourceSearchParameter param, String value){
+    public BatchResourcesAdapter parameter(ResourceSearchParameter param, String value) {
         params.add(param.getName(), value);
         return this;
     }
 
-    public OperationResult<ClientResourceListWrapper> search(){
+    public BatchResourcesAdapter parameter(String name, String value) {
+        params.add(name, value);
+        return this;
+    }
+
+    public OperationResult<ClientResourceListWrapper> search() {
         return buildRequest(ClientResourceListWrapper.class).get();
     }
 
@@ -125,7 +131,7 @@ public class BatchResourcesAdapter extends AbstractAdapter {
         return task;
     }
 
-    public OperationResult delete(){
+    public OperationResult delete() {
         return buildRequest(Object.class).delete();
     }
 
