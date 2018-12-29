@@ -287,6 +287,9 @@ Session session = client.authenticate("jasperadmin", "jasperadmin", new Locale("
 // or
 Session session = client.authenticate("jasperadmin", "jasperadmin", "de", America/Los_Angeles");
 ```
+
+The session keeps track of all cookies returned from requests, including the JSESSIONID from the `JasperReports Server`. This allows proxies and load balancers to inject cookies into the  `JasperReports Server` responses and have those additional cookies be returned in subsequent calls.
+
 ## Setting authentication type
 `JasperserverRestClient` supports two authentication types: SPRING and BASIC. 
 `SPRING` type of authentication means that your credentials are sent as a form  to `/j_security_check directly/` uri. You obtain a JSESSIONID cookie of the authenticated session after sending credentials.
@@ -953,6 +956,7 @@ The second way of using the attributes service is adding or replacing individual
                         .createOrUpdate(attribute)
                         .getEntity();
 ```
+
 ## Deleting User Attributes
 The `delete()` method of the attributes service removes attributes from the specified user. When attributes are
 removed, both the name and the value of the attribute are removed, not only the value.
@@ -1105,16 +1109,19 @@ OperationResult<HypermediaAttributesListWrapper> attributes = session
 Be careful with definition of attribute names because the server uses different strategies for creating or updating attributes depending on list of attribute names, list of attributes and existing attributes on the server (see section [Setting User Attributes](#setting-user-attributes)).
 To create a single server attribute:
 ```java
-HypermediaAttribute attribute = new HypermediaAttribute(new ClientUserAttribute().setName("latency").setValue("5700"));
+		HypermediaAttribute attribute = new HypermediaAttribute(new
+		     ClientUserAttribute().setName("latency").setValue("5700"));
 
-        session
+       session
                 .attributesService()
                 .attribute("latency")
                 .createOrUpdate(attribute);
 ```
 Attribute name should not exist on the server and match with `name` field of `attribute` object, otherwise the attribute will be deleted. 
+
 ## Deleting Server Attributes
-You can also delete all server attribute.
+
+You can delete all server attributes.
 ```java
         session
                 .attributesService()
@@ -1122,7 +1129,7 @@ You can also delete all server attribute.
                 .delete()
                 .getEntity();
 ```
-You can also delete a single server attribute.
+a single server attribute.
 ```java
         session
                 .attributesService()
@@ -1137,7 +1144,7 @@ session
                 .delete();
 ```
 ## Getting attributes permissions
-Since `6.1` version of `JaspersoftReportServer` you can obtain attributes with permissions using additional parameter `setIncludePermissions()`:
+Since `6.1` version of `JasperReports Server` you can obtain attributes with permissions using additional parameter `setIncludePermissions()`:
 ```java
 
  HypermediaAttribute entity = session
@@ -1920,7 +1927,7 @@ Also you can specify:
                 .parameter(ExportParameter.EVERYTHING)
                 .create();
 ```
-```
+
 ## Checking the Export Task
 After receiving the export ID, you can check the state of the export operation.
 ```java
@@ -1975,9 +1982,6 @@ Also you can set:
 	include - import will proceed with broken dependencies. In this case server will try to import broken dependent resources. a) In the case when in target environment there are already dependent resources import of target resource will be success, and resource will be skipped from import if there are no dependent resources to recover dependency chain.
 `parameters` - list of import parameters. 
 `organization` - organization identifier we import into.
-```java
-
-```
 ## Checking the Import Task
 After receiving the import ID, you can check the state of the import operation.
 ```java
@@ -1991,7 +1995,7 @@ State state = operationResult.getEntity();
 ```
 ## Managing the Import task
 
-To get import task metadata you can use next code example:
+To get import task metadata:
 ```java
         OperationResult<State> operationResult = session
                 .importService()
@@ -2276,8 +2280,9 @@ RequestExecution requestExecution = session
 
 
 # Possible issues
-1. <strong>Deploying jrs-rest-client within web app to any Appplication Server, e.g. JBoss, Glassfish, WebSphere etc.</strong>
-jrs-rest-client uses the implementation of JAX-RS API of version 2.0 and if your application server does not support this version you will get an error. To solve this problem you need to add to your application a deployment configuration specific for your AS where you need to exclude modules with old JAX-RS API version. Example of such descriptor for JBoss AS you can find below:
+
+1. <strong>Deploying jrs-rest-client within a web application to any Application Server, e.g. JBoss, Glassfish, WebSphere etc.</strong>
+jrs-rest-client uses the implementation of JAX-RS API of version 2.0 and if your application server does not support this version you will get an error. To solve this problem, you will need to add to your application a deployment configuration specific for your application server to exclude modules with older JAX-RS API versions. An example of such a descriptor for JBoss AS is:
 
 ```xml
 <jboss-deployment-structure>
@@ -2306,7 +2311,7 @@ jrs-rest-client uses the implementation of JAX-RS API of version 2.0 and if your
 </jboss-deployment-structure>
 ```
 
-# Maven dependency to add jasperserver-rest-client to your app:
+# Maven dependency to add jasperserver-rest-client to your application:
 ```xml
     <dependencies>
         <dependency>
@@ -2329,7 +2334,7 @@ jrs-rest-client uses the implementation of JAX-RS API of version 2.0 and if your
 
 #License
 --------
-Copyright &copy; 2005 - 2017 TIBCO. All rights reserved.
+Copyright &copy; 2005 - 2018 TIBCO. All rights reserved.
 http://www.jaspersoft.com.
 
 Unless you have purchased a commercial license agreement from TIBCO,

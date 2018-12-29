@@ -26,6 +26,7 @@ import com.jaspersoft.jasperserver.jaxrs.client.providers.CustomRepresentationTy
 import com.sun.jersey.multipart.impl.MultiPartWriter;
 import java.security.SecureRandom;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.logging.Logger;
 import javax.net.ssl.HostnameVerifier;
@@ -34,6 +35,8 @@ import javax.net.ssl.SSLSession;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.NewCookie;
+
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.glassfish.jersey.client.ClientProperties;
@@ -51,6 +54,7 @@ public class SessionStorage {
     private Locale userLocale;
     private WebTarget rootTarget;
     private String sessionId;
+    private Map<String, NewCookie> cookies;
 
 
     private Client client;
@@ -143,8 +147,9 @@ public class SessionStorage {
                 .register(customRepresentationTypeProvider)
                 .register(JacksonFeature.class)
                 .register(MultiPartWriter.class);
-        if (sessionId != null) {
-            rootTarget.register(new SessionOutputFilter(sessionId));
+        if (cookies != null) {
+            //rootTarget.register(new SessionOutputFilter(sessionId));
+            rootTarget.register(new SessionOutputFilter(this));
         }
         if (configuration.getLogHttp()) {
             rootTarget.register(initLoggingFilter());
@@ -171,14 +176,36 @@ public class SessionStorage {
     }
 
     public String getSessionId() {
-        return sessionId;
+    	if (cookies == null) {
+    		return sessionId;
+    	} else {
+    		return cookies.get("JSESSIONID").getValue();
+    	}
     }
 
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
 
-    public WebTarget getRootTarget() {
+    public Map<String, NewCookie> getCookies() {
+		return cookies;
+	}
+
+	public void setCookies(Map<String, NewCookie> cookies) {
+		this.cookies = cookies;
+	}
+
+	public void updateCookies(Map<String, NewCookie> newCookies) {
+		if (this.cookies == null) {
+			this.cookies = newCookies;
+		} else if (newCookies != null && !newCookies.isEmpty()) {
+			for (Map.Entry<String, NewCookie> cookie : newCookies.entrySet()) {
+				this.cookies.put(cookie.getKey(), cookie.getValue());
+			}
+		}
+	}
+
+	public WebTarget getRootTarget() {
         return rootTarget;
     }
 

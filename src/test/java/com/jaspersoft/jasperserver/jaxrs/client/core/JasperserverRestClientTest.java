@@ -39,6 +39,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 import static org.powermock.api.support.membermodification.MemberMatcher.field;
@@ -408,6 +409,7 @@ public class JasperserverRestClientTest extends PowerMockTestCase {
         // Then
         assertEquals(retrieved, sessionMock);
     }
+    final String TEST_SESSION_ID = "AC0C233ED7E9BE5DD0D4A286E6C8BBAE";
 
     @Test
     public void should_invoke_login_method_and_return_proper_session_object() throws Exception {
@@ -437,7 +439,7 @@ public class JasperserverRestClientTest extends PowerMockTestCase {
         doReturn(location).when(responseMock).getLocation();
         doReturn(302).when(responseMock).getStatus();
         doReturn(new HashMap<String, NewCookie>() {{
-            put("JSESSIONID", new NewCookie(new Cookie("JSESSIONID", "AC0C233ED7E9BE5DD0D4A286E6C8BBAE")));
+            put("JSESSIONID", new NewCookie(new Cookie("JSESSIONID", TEST_SESSION_ID)));
         }}).when(responseMock).getCookies();
         doReturn(rootTargetMock).when(rootTargetMock).register(any(SessionOutputFilter.class));
 
@@ -449,7 +451,6 @@ public class JasperserverRestClientTest extends PowerMockTestCase {
         verify(sessionStorageMock).getCredentials();
         verify(sessionStorageMock).getRootTarget();
         verify(configurationMock).getAuthenticationType();
-        verify(sessionStorageMock).getCredentials();
         verify(rootTargetMock, never()).register(isA(BasicAuthenticationFilter.class));
         verify(rootTargetMock).path("/j_spring_security_check");
         verify(webTargetMock).property(ClientProperties.FOLLOW_REDIRECTS, Boolean.FALSE);
@@ -457,7 +458,7 @@ public class JasperserverRestClientTest extends PowerMockTestCase {
         verify(invocationBuilderMock).post(Entity.entity(any(Form.class), MediaType.APPLICATION_FORM_URLENCODED_TYPE));
         verify(responseMock).getLocation();
         verify(responseMock).getCookies();
-        verify(sessionStorageMock).setSessionId("AC0C233ED7E9BE5DD0D4A286E6C8BBAE");
+        when(sessionStorageMock.getSessionId()).thenReturn(TEST_SESSION_ID);
         verify(rootTargetMock).register(isA(SessionOutputFilter.class));
     }
 
@@ -492,7 +493,7 @@ public class JasperserverRestClientTest extends PowerMockTestCase {
         doReturn(location).when(responseMock).getLocation();
         doReturn(302).when(responseMock).getStatus();
         doReturn(new HashMap<String, NewCookie>() {{
-            put("JSESSIONID", new NewCookie(new Cookie("JSESSIONID", "AC0C233ED7E9BE5DD0D4A286E6C8BBAE")));
+            put("JSESSIONID", new NewCookie(new Cookie("JSESSIONID", TEST_SESSION_ID)));
         }}).when(responseMock).getCookies();
         doReturn(rootTargetMock).when(rootTargetMock).register(any(SessionOutputFilter.class));
 
@@ -504,7 +505,6 @@ public class JasperserverRestClientTest extends PowerMockTestCase {
         verify(sessionStorageMock).getCredentials();
         verify(sessionStorageMock).getRootTarget();
         verify(configurationMock).getAuthenticationType();
-        verify(sessionStorageMock).getCredentials();
         verify(rootTargetMock, never()).register(isA(BasicAuthenticationFilter.class));
         verify(rootTargetMock).path("/j_spring_security_check");
         verify(webTargetMock).property(ClientProperties.FOLLOW_REDIRECTS, Boolean.FALSE);
@@ -515,7 +515,7 @@ public class JasperserverRestClientTest extends PowerMockTestCase {
         verify(invocationBuilderMock).post(Entity.entity(formSpy, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
         verify(responseMock).getLocation();
         verify(responseMock).getCookies();
-        verify(sessionStorageMock).setSessionId("AC0C233ED7E9BE5DD0D4A286E6C8BBAE");
+        when(sessionStorageMock.getSessionId()).thenReturn(TEST_SESSION_ID);
         verify(rootTargetMock).register(isA(SessionOutputFilter.class));
     }
 
@@ -551,7 +551,7 @@ public class JasperserverRestClientTest extends PowerMockTestCase {
         doReturn(location).when(responseMock).getLocation();
         doReturn(302).when(responseMock).getStatus();
         doReturn(new HashMap<String, NewCookie>() {{
-            put("JSESSIONID", new NewCookie(new Cookie("JSESSIONID", "AC0C233ED7E9BE5DD0D4A286E6C8BBAE")));
+            put("JSESSIONID", new NewCookie(new Cookie("JSESSIONID", TEST_SESSION_ID)));
         }}).when(responseMock).getCookies();
         doReturn(rootTargetMock).when(rootTargetMock).register(any(SessionOutputFilter.class));
 
@@ -563,7 +563,6 @@ public class JasperserverRestClientTest extends PowerMockTestCase {
         verify(sessionStorageMock).getCredentials();
         verify(sessionStorageMock).getRootTarget();
         verify(configurationMock).getAuthenticationType();
-        verify(sessionStorageMock).getCredentials();
         verify(rootTargetMock, never()).register(isA(BasicAuthenticationFilter.class));
         verify(rootTargetMock).path("/j_spring_security_check");
         verify(webTargetMock).property(ClientProperties.FOLLOW_REDIRECTS, Boolean.FALSE);
@@ -575,7 +574,7 @@ public class JasperserverRestClientTest extends PowerMockTestCase {
         verify(invocationBuilderMock).post(Entity.entity(formSpy, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
         verify(responseMock).getLocation();
         verify(responseMock).getCookies();
-        verify(sessionStorageMock).setSessionId("AC0C233ED7E9BE5DD0D4A286E6C8BBAE");
+        when(sessionStorageMock.getSessionId()).thenReturn(TEST_SESSION_ID);
         verify(rootTargetMock).register(isA(SessionOutputFilter.class));
     }
 

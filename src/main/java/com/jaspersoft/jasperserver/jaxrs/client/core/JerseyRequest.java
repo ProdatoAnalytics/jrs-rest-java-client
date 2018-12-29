@@ -66,7 +66,8 @@ public class JerseyRequest<ResponseType> implements RequestBuilder<ResponseType>
         this.responseClass = responseClass;
         this.responseGenericType = null;
         restrictedHttpMethods = sessionStorage.getConfiguration().getRestrictedHttpMethods();
-        init(sessionStorage);
+        storage = sessionStorage;
+        init();
 
     }
 
@@ -77,17 +78,18 @@ public class JerseyRequest<ResponseType> implements RequestBuilder<ResponseType>
         this.responseClass = (Class<ResponseType>) genericType.getRawType();
         this.responseGenericType = genericType;
         restrictedHttpMethods = sessionStorage.getConfiguration().getRestrictedHttpMethods();
-        init(sessionStorage);
+        storage = sessionStorage;
+        init();
     }
 
-    private void init(SessionStorage sessionStorage) {
-        RestClientConfiguration configuration = sessionStorage.getConfiguration();
+    private void init() {
+        RestClientConfiguration configuration = storage.getConfiguration();
 
         contentType = configuration.getContentMimeType() == JSON ? APPLICATION_JSON : APPLICATION_XML;
         acceptType = configuration.getAcceptMimeType() == JSON ? APPLICATION_JSON : APPLICATION_XML;
         headers = new MultivaluedHashMap<String, String>();
 
-        usersWebTarget = sessionStorage.getRootTarget()
+        usersWebTarget = storage.getRootTarget()
                 .path("/rest_v2");
         handleErrors = configuration.getHandleErrors();
     }
@@ -195,6 +197,11 @@ public class JerseyRequest<ResponseType> implements RequestBuilder<ResponseType>
             }
         }
 
+        // Save cookies from responses to save updated values
+        if (response != null) {
+        	storage.updateCookies(response.getCookies());
+        }
+        
         if (response != null && response.getStatus() >= 400) {
             if (!handleErrors) {
                 return (responseGenericType != null) ? new NullEntityOperationResult<ResponseType>(response, responseGenericType, errorHandler)
@@ -214,6 +221,10 @@ public class JerseyRequest<ResponseType> implements RequestBuilder<ResponseType>
                 request = request.header(header.getKey(), value);
             }
         }
+        /*
+         * Should be able to use request.cookie here, but it does not work!
+         * https://stackoverflow.com/questions/49676200/jerseys-javax-ws-rs-client-invocation-builder-cookie-method-results-in-bad-c
+         */
     }
 
     @Override

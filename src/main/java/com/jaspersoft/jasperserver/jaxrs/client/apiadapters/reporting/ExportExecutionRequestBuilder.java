@@ -57,12 +57,18 @@ public class ExportExecutionRequestBuilder extends AbstractAdapter {
 
     /**
      * <code>OperationResult</code> should be parametrized with <code>String</code> if you're exporting HTML,
-     * in other cases it should be parametrized with <code>InputStream</code>
+     * in other cases it should be parameterized with <code>InputStream</code>
      */
     private OperationResult outputResource(boolean isHtmlExport) {
-        return buildRequest(sessionStorage, isHtmlExport ? String.class : InputStream.class,
-                new String[]{REPORT_EXECUTIONS, requestId, EXPORTS, exportId, OUTPUT_RESOURCE})
-                .get();
+    	if (isHtmlExport) {
+	        return buildRequest(sessionStorage, String.class,
+	                new String[]{REPORT_EXECUTIONS, requestId, EXPORTS, exportId, OUTPUT_RESOURCE})
+	                .get();
+    	} else {
+            return buildRequest(sessionStorage, InputStream.class,
+                    new String[]{REPORT_EXECUTIONS, requestId, EXPORTS, exportId, OUTPUT_RESOURCE})
+                    .get();
+    	}
     }
 
     public OperationResult<InputStream> outputResource() {
