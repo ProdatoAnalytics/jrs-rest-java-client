@@ -28,7 +28,7 @@ The test suite of the library includes live reporting examples of this client ag
 4. [Using Sessions and Making Requests](#using-sessions-and-making-requests).
 5. [Report services](#report-services).
   * [Running a report synchronously](#running-a-report).
-  * [Asynchronous report execution]#(asynchronous-report-execution).
+  * [Asynchronous report execution](#asynchronous-report-execution).
   * [Requesting report execution status](#requesting-report-execution-status).
   * [Requesting report execution details](#requesting-report-execution-details).
   * [Requesting Report Output](#requesting-report-output).
@@ -611,7 +611,7 @@ You will need to get the exportId of the output being generated in order to requ
 
 ```
 
-jasperreports.io does not include details of it's output in the `executionDetails`. A separate report export execution will need to be made, once the asynchronous jasperreports.io report execution is ready. See (#exporting-a-report-asynchronously).
+jasperreports.io does not include details of it's output in the `executionDetails`. A separate report export execution will need to be made, once the asynchronous jasperreports.io report execution is ready. See [Exporting a Report Asynchronously](#exporting-a-report-asynchronously).
 
 ## Requesting Report Output
 After requesting a report execution and waiting synchronously or asynchronously for it to finish, you are ready to download the report output. To download the main report output, specify this export ID in the `export` method. For example, to download the main HTML of the report execution response above, use the following code:
