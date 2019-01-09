@@ -41,8 +41,8 @@ public class ReportingService extends AbstractAdapter {
         JerseyRequest<ReportExecutionDescriptor> jerseyRequest = buildRequest(sessionStorage,
                 ReportExecutionDescriptor.class,
                 new String[]{REPORT_EXECUTIONS_URI});
-        if (request.getTimeZone() != null) {
-            jerseyRequest.addHeader("Accept-Timezone", request.getTimeZone().getID());
+        if (request.getReportTimeZone() != null) {
+            jerseyRequest.addHeader("Accept-Timezone", request.getReportTimeZone().getID());
         }
         return jerseyRequest
                 .post(request);

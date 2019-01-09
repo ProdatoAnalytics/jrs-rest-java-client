@@ -14,6 +14,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <powermock.version>1.5.5</powermock.version>
+        <jackson.version>2.5.4</jackson.version>
+        
         <jasperserver-dto.version>7.1.0</jasperserver-dto.version>
     </properties>
 
@@ -111,6 +113,13 @@
             <artifactId>genson</artifactId>
             <version>0.99</version>
         </dependency>
+        
+        <dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+    		<artifactId>jackson-annotations</artifactId>
+    		<version>${jackson.version}</version>
+		</dependency>
+
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>

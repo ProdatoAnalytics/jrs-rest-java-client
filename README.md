@@ -1,7 +1,11 @@
 Rest Client for JasperReports Server [![Build Status](https://travis-ci.org/Jaspersoft/jrs-rest-java-client.svg?branch=master)](https://travis-ci.org/Jaspersoft/jrs-rest-java-client) [![Coverage Status](https://coveralls.io/repos/Jaspersoft/jrs-rest-java-client/badge.png?branch=master)](https://coveralls.io/r/Jaspersoft/jrs-rest-java-client?branch=master)
 =========================================
 
-With this library, you can easily write Java applications which can interact with JasperReports Servers  through a friendly REST API, allowing the automation of interactive and administrative tasks.
+With this library, you can develop Java applications which can interact with JasperReports Server through it's REST API, allowing the automation of interactive and administrative tasks.
+
+Also the reporting REST services of jasperreports.io can be used with this library. Differences in jasperreports.io use will be highlighted in this documentation.
+
+The test suite of the library includes live reporting examples of this client against JasperReports Server and jasperreports.io, and full code examples of this are included below.
 
 # Table of Contents
 ------------------
@@ -17,12 +21,14 @@ With this library, you can easily write Java applications which can interact wit
   * [Logging](#logging).
   * [Switching between JSON and XML](#switching-between-json-and-xml).
   * [Client instantiation](#client-instantiation).
-3. [Authentication](#authentication).
+3. [Authentication and Sessions](#authentication-and-sessions).
   * [Anonymous session](#anonymous-sessions).
+  * [jasperreports.io session](#jasperreports-io-sessions).
   * [Invalidating session](#invalidating-sessions).
 4. [Using Sessions and Making Requests](#using-sessions-and-making-requests).
 5. [Report services](#report-services).
-  * [Running a report](#running-a-report).
+  * [Running a report synchronously](#running-a-report).
+  * [Asynchronous report execution]#(asynchronous-report-execution).
   * [Requesting report execution status](#requesting-report-execution-status).
   * [Requesting report execution details](#requesting-report-execution-details).
   * [Requesting Report Output](#requesting-report-output).
@@ -266,8 +272,8 @@ After configuration you need just to pass `configuration` instance to `Jasperser
 JasperserverRestClient client = new JasperserverRestClient(configuration);
 ```
 
-# Authentication
----------------
+# Authentication and Sessions
+-----------------------------
 This library automatically encrypts your password if password encryption has been configured on the target JasperReports Server, so to authenticate you need just specify login and password (not encrypted) in `authenticate()` method.
 ```java
 Session session = client.authenticate("jasperadmin", "jasperadmin");
@@ -308,14 +314,23 @@ Please note that basic authentication is stateless and will create a new session
 
 ## Anonymous sessions
 For some JasperReports Server services, authentication is not required (for example, settings service, bundles service or server info service), so you can use an anonymous session:
- ```java
+```java
 AnonymousSession session = client.getAnonymousSession();
 ```
+
+## jasperreports.io sessions
+
+jasperreports.io does not have authentication, but needs full session tracking.
+```java
+Session session = client.getUnauthenicatedSession();;
+```
+
 ## Invalidating sessions
-You can invalidate the server session with a `logout()`.
+You can invalidate the JasperReports Server user session with a `logout()`.
 ```java
 session.logout();
 ```
+There is no user session with jasperreports.io.
 
 # Using Sessions and making requests
 
@@ -367,25 +382,69 @@ result.getResponse.getHeaderString("Total-Count") // get Total-Count header
 
 If you are using the default exception handling approach, outlined in [Exception Handling](#exception-handling), you need to be checking the `getStatus()` as no exceptions will be raised if there are errors.
 
-In your use of this REST client, you should create a session and reuse it as much as possible in your application. This will maintain a user session in the JasperReports Server until you log the session out, or there is no activity on the session for the session expiry time configured on the server.
+In your use of this REST client, you should create a session and reuse it as much as possible in your application. This will maintain a user session in the JasperReports Server until you log the session out, or there is no activity on the session for the session expiry time configured on the server. There are many operations that require the use of the same session, like asynchronously running a report and then getting it's output.
 
-
+The Sessions (not AnonymousSessions) track all cookies, which allows the Session to work with proxies and load balancers.
 
 
 Report services
 ===============
-## Running a report
-There are two approaches to run a report - in synchronous and asynchronous modes.
-To run report in synchronous mode you use:
+## Report execution and types of output
+There are two approaches to run a report and get output documents - synchronously in a single request/response, and asynchronously which requires a number of calls execute the report and retrieve the output.
+
+Note the majority of report output is a single document, but that HTML output has additional "attachments" - images, etc - that need to be included to complete the output. The attachments can be loaded in two ways.
+
+1. Let a browser access the attachments
+
+Set an attachment prefix on the report request and provide a proxy service to get the attachments.
+
 ```java
 OperationResult<InputStream> result = session
         .reportingService()
         .report("/reports/samples/Cascading_multi_select_report")
         .prepareForRun(ReportOutputFormat.HTML, 1)
+        .setAttachmentPrefix("path/to/attachmentProxy?execution={reportExecutionId}&export={exportExecutionId}&attachment=")
+        .run();
+InputStream report = result.getEntity();
+```
+
+Based on the attachment prefix set, the generated HTML output for a report will include URLs for attachments like:
+path/to/attachmentProxy?execution=<executionGUID>&export=<exportGUID>&attachment=<filename>
+
+The proxy you will need to write needs to pass a request through to the attachments service.
+
+<jasperreports server>/rest_v2/reportExecutions/{reportExecutionId}/exports/
+{exportExecutionId}/attachments/{filename}
+
+With this approach, the browser will request the attachments as the page loads and your proxy will make the REST requests to retrieve them.
+
+2. Retrieve and manage the attachments
+
+Using an asynchronous report execution call:
+* set the attachmentPrefix to where you are going to store the attachment files
+* as part of processing the asynchronous responses:
+** retrieve the attachments (#download-file-attachments-for-report-output)
+** store the attachment files in your environment 
+
+The HTML output will include include URLs to GET the attachments from your environment.
+
+This approach does not work for jasperreports.io 1.0.
+
+## Running a report synchronously
+To run a report in synchronous mode you use:
+```java
+OperationResult<InputStream> result = session
+        .reportingService()
+        .report("/reports/samples/Cascading_multi_select_report")
+        .prepareForRun(ReportOutputFormat.PDF, 1)
         .parameter("Cascading_name_single_select", "A & U Stalker Telecommunications, Inc")
         .run();
 InputStream report = result.getEntity();
 ```
+This corresponds to the Jaspersoft REST API:
+
+GET <jaspersoft server>/rest_v2/reports/path/to/report.<format>?<arguments>
+
 You can set format of report as String as well(name of format is case insensitive):
 ```java
 OperationResult<InputStream> result = session
@@ -407,8 +466,8 @@ OperationResult<InputStream> result = session
         .parameter("Country_multi_select", "USA")
         .run();
 ```
-Please notice, if you pass zero as number of page, you  will get all  pages of report.
-In this mode you don't need to work in one session. In the above code we specified report URI, format in which we want to get a report and some report parameters. As we a result we got `InputStream` instance. In synchronous mode as a response you get a report itself while in asynchronous you get just a descriptor with report ID which you can use to download report afer it will be ready.
+Please notice, if you pass zero as number of pages, you  will get all  pages of report.
+
 If you need run report in another time zone specify it using `forTimeZone()` method:
 ```java
 OperationResult<InputStream> result = session
@@ -428,36 +487,50 @@ OperationResult<InputStream> result = session
                 .forTimeZone("America/Los_Angeles")
                 .run();
 ```
-In order to run a report in asynchronous mode, you need firstly build `ReportExecutionRequest` instance and specify all the parameters needed to launch a report. The response from the server is the `ReportExecutionDescriptor` instance which contains the request ID needed to track the execution until completion and others report parameters. Here's the code to run a report:
+
+
+## Asynchronous report execution
+
+Reports can also be executed asynchronously so that requesting processes are not blocked waiting for responses. This is used in visualize.js to allow browsers to execute report requests in parallel.
+
+The asynchronous report execution process is:
+* Request an asynchronous report execution
+* Poll report execution status until the report is ready
+* (jasperreports.io only) request an export of the report
+* (optional) poll report export status until ready
+* get report output
+* (HTML only) get attachment files
+
+In order to run a report in asynchronous mode, you build a `ReportExecutionRequest` object and specify the parameters needed to launch a report. The response from the server is the `ReportExecutionDescriptor` instance which contains the request ID needed to track the execution until completion, get output etc.
+
+Here's the code to run a report asynchronously:
 ```java
 //instantiating request and specifying report parameters
 ReportExecutionRequest request = new ReportExecutionRequest();
 request.setReportUnitUri("/reports/samples/StandardChartsReport");
 request
-        .setAsync(true)                         //this means that report will be run on server asynchronously
+        .setAsync(true)
         .setOutputFormat(ReportOutputFormat.HTML);               //report can be requested in different formats e.g. html, pdf, etc.
 
 OperationResult<ReportExecutionDescriptor> operationResult =
-        session                                 //pay attention to this, all requests are in the same session!!!
+        session
                 .reportingService()
                 .newReportExecutionRequest(request);
 
 reportExecutionDescriptor = operationResult.getEntity();
 ```
-In the above code we've created `ReportExecutionRequest` instance and sent it to JR server through the `newReportExecutionRequest` method. As a response we've got `OperationResult` instance which contains HTTP response wrapper and instance of `ReportExecutionDescriptor` which we can get with `operationResult.getEntity()`.
-Also you can set output format as String:
-```java
-ReportExecutionRequest request = new ReportExecutionRequest();
-request.setReportUnitUri("/reports/samples/StandardChartsReport");
-request
-        .setAsync(true)                         
-        .setOutputFormat("html");               
-```
-As in sync mode you can set report time zone:
+
+As a response we've got `OperationResult` instance which contains HTTP response wrapper and instance of `ReportExecutionDescriptor` which we can get with `operationResult.getEntity()`.
+
+This corresponds to the Jaspersoft REST API:
+
+POST  <jaspersoft server>/rest_v2/reportExecutions
+
+As in synchronous mode, you can set the report time zone and other parameters:
 ```java
 ReportExecutionRequest request = new ReportExecutionRequest();
 request
-                .setOutputFormat(ReportOutputFormat.PDF)
+                .setOutputFormat(ReportOutputFormat.PDF)  // or string "pdf", "html", ...
                 .setPages("1")
                 .setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"))
                 .setReportUnitUri("/public/Samples/Reports/12g.PromotionDetailsReport")
@@ -467,7 +540,7 @@ request
 After you've got `ReportExecutionDescriptor` you can request for the report execution status:
 ```java
 OperationResult<ReportExecutionStatusEntity> operationResult =
-        session                                 //pay attention to this, all requests are in the same session!!!
+        session
                 .reportingService()
                 .reportExecutionRequest(reportExecutionDescriptor.getRequestId())
                 .status();
@@ -475,30 +548,87 @@ OperationResult<ReportExecutionStatusEntity> operationResult =
 ReportExecutionStatusEntity statusEntity = operationResult.getEntity();
 ```
 In the above code we've just specified request ID and got its status as a `ReportExecutionStatusEntity` instance.
+
+This corresponds to the Jaspersoft REST API:
+
+GET  <jaspersoft server>/rest_v2/reportExecutions/<executionRequestId>/status
+
 ## Requesting report execution details
-Once the report is ready, your client must determine the names of the files to download by requesting the
-reportExecution descriptor again.
+Once the report execution is ready, your client must determine the names of the files to download by requesting the reportExecution descriptor again.
 ```java
 OperationResult<ReportExecutionDescriptor> operationResult =
-        session                                 //pay attention to this, all requests are in the same session!!!
+        session
                 .reportingService()
                 .reportExecutionRequest(reportExecutionDescriptor.getRequestId())
                 .executionDetails();
 
 ReportExecutionDescriptor descriptor = operationResult.getEntity();
 ```
+This corresponds to the Jaspersoft REST API:
+
+GET  <jaspersoft server>/rest_v2/reportExecutions/<executionRequestId>
+
+In JasperReports Server, the `ReportExecutionDescriptor` contains the details and status of the report execution, as well as the exported files/content of the report. After the report is ready, the output generation starts. You can repeatedly get the `executionDetails` to poll for the output generation status.
+
+You will need to get the exportId of the output being generated in order to request the content.
+
+```java
+		  // After the reportExecution is ready
+		  
+        String exportStatus = null;
+        String exportId = null;
+        do {
+        	if (exportStatus != null) {
+        		try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) { }
+        	}
+	        // get execution details
+	        OperationResult<ReportExecutionDescriptor> operationResultRED =
+	                session
+	                        .reportingService()
+	                        .reportExecutionRequest(reportExecutionDescriptor.getRequestId())
+	                        .executionDetails();
+	
+	        assertTrue(operationResultRED.getResponseStatus() == 200);
+	
+	        ReportExecutionDescriptor descriptor = operationResultRED.getEntity();
+	        System.out.println(descriptor);
+	        
+	        for (ExportDescriptor ed : descriptor.getExports()) {
+	        	System.out.println(ed);
+	        	// find PDF descriptor
+	        	if (ed.getOutputResource() != null && ed.getOutputResource().getContentType().contains("pdf")) {
+	        			exportStatus = ed.getStatus();
+	        			exportId = ed.getId();
+	        	}
+	        }
+	        System.out.println("export status: " + exportStatus + ", " + exportId);
+        } while (exportStatus == null || exportStatus.equalsIgnoreCase("queued")  ||
+        		exportStatus.equalsIgnoreCase("execution"));
+
+        assertTrue(exportStatus.equalsIgnoreCase("ready"));
+
+```
+
+jasperreports.io does not include details of it's output in the `executionDetails`. A separate report export execution will need to be made, once the asynchronous jasperreports.io report execution is ready. See (#exporting-a-report-asynchronously).
+
 ## Requesting Report Output
-After requesting a report execution and waiting synchronously or asynchronously for it to finish, you are ready to download the report output. Every export format of the report has an ID that is used to retrieve it. For example, the HTML export has the ID html. To download the main report output, specify this export ID in the `export` method. For example, to download the main HTML of the report execution response above, use the following code:
+After requesting a report execution and waiting synchronously or asynchronously for it to finish, you are ready to download the report output. To download the main report output, specify this export ID in the `export` method. For example, to download the main HTML of the report execution response above, use the following code:
 ```java
 OperationResult<InputStream> operationResult =
-        session                                 //pay attention to this, all requests are in the same session!!!
+        session
                 .reportingService()
                 .reportExecutionRequest(reportExecutionDescriptor.getRequestId())
-                .export("html")
+                .export(exportId)
                 .outputResource();
 
 InputStream file = operationResult.getEntity();
 ```
+This corresponds to the Jaspersoft REST API:
+
+GET  <jaspersoft server>/rest_v2/reportExecutions/<executionRequestId>/exports/<exportId>/outputResource
+
 As a response you'll get an `InputStream` instance.
 ## Download file attachments for report output
 To download file attachments for HTML output, use the following code. You must download all attachments to display the HMTL content properly.
@@ -507,7 +637,7 @@ ExportDescriptor htmlExportDescriptor = ... //retrieving htmlExportDescriptor fr
 
 for(AttachmentDescriptor attDescriptor : htmlExportDescriptor.getAttachments()){
     OperationResult<InputStream> operationResult =
-            session                             //pay attention to this, all requests are in the same session!!!
+            session
                     .reportingService()
                     .reportExecutionRequest(reportExecutionDescriptor.getRequestId())
                     .export(htmlExportDescriptor.getId())
@@ -517,8 +647,16 @@ for(AttachmentDescriptor attDescriptor : htmlExportDescriptor.getAttachments()){
     //doing something with file
 }
 ```
+
+This corresponds to the Jaspersoft REST API:
+
+GET  <jaspersoft server>/rest_v2/reportExecutions/<executionRequestId>/exports/<exportId>/
+/attachments/<fileName>
+
+This does not work for jasperreports.io 1.0.
+
 ## Exporting a Report Asynchronously
-After running a report and downloading its content in a given format, you can request the same report in other formats. As with exporting report formats through the user interface, the report does not run again because the export process is independent of the report.
+After running a report and downloading its content in a given format, you can request the same report in other formats. As with exporting report formats through the user interface, the report execution does not run again because the export process is independent of the report execution.
 ```java
 ExportExecutionOptions exportExecutionOptions = new ExportExecutionOptions()
         .setOutputFormat(ReportOutputFormat.PDF)
@@ -531,23 +669,37 @@ OperationResult<ExportExecutionDescriptor> operationResult =
                 .runExport(exportExecutionOptions);
 
 ExportExecutionDescriptor statusEntity = operationResult.getEntity();
+
+String exportId = statusEntity.getId();
 ```
+
+This corresponds to the Jaspersoft REST API:
+
+POST  <jaspersoft server>/rest_v2/reportExecutions/<executionRequestId>/exports
+
 ## Polling Export Execution
 As with the execution of the main report, you can also poll the execution of the export process.
 For example, to get the status of the HTML export in the previous example, use the following code:
 ```java
 OperationResult<ReportExecutionStatusEntity> operationResult =
-        session                                 //pay attention to this, all requests are in the same session!!!
+        session
                 .reportingService()
                 .reportExecutionRequest(reportExecutionDescriptor.getRequestId())
-                .export("html")
+                .export(exportId)
                 .status();
 
 ReportExecutionStatusEntity statusEntity = operationResult.getEntity();
 ```
+
+This corresponds to the Jaspersoft REST API:
+
+POST  <jaspersoft server>/rest_v2/reportExecutions/<executionRequestId>/exports/<exportID>/status
+
 ## Finding Running Reports and Jobs
-You can search for reports that are running on the server, including
-report jobs triggered by the scheduler.
+You can search for reports that are running on the JasperReports Server, including report jobs triggered by the scheduler.
+
+This request is not valid for jasperreports.io.
+
 To search for running reports, use the search arguments from `ReportAndJobSearchParameter` enumeration.
 ```java
 OperationResult<ReportExecutionListWrapper> operationResult =
@@ -559,6 +711,12 @@ OperationResult<ReportExecutionListWrapper> operationResult =
 
 ReportExecutionListWrapper entity = operationResult1.getEntity();
 ```
+
+
+This corresponds to the Jaspersoft REST API:
+
+GET  <jaspersoft server>/rest_v2/reportExecutions?<parameters>
+
 ## Stopping Running Reports and Jobs
 To stop a report that is running and cancel its output, use the code below:
 ```java
@@ -570,6 +728,12 @@ OperationResult<ReportExecutionStatusEntity> operationResult1 =
 
 ReportExecutionStatusEntity statusEntity = operationResult1.getEntity();
 ```
+
+This corresponds to the Jaspersoft REST API:
+
+PUT  <jaspersoft server>/rest_v2/reportExecutions/<executionRequestId>/status
+
+with a body of `{ "value": "cancelled" }`
 
 # Input controls services
 The reports service includes methods for reading and setting input controls of any input controls container, i.e. reportUnit, reportOptions, dashboard, adhocDataView

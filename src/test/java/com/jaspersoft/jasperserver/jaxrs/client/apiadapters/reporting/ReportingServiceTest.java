@@ -141,7 +141,7 @@ public class ReportingServiceTest extends PowerMockTestCase {
         when(buildRequest(eq(sessionStorageMock), eq(ReportExecutionDescriptor.class),
                 eq(new String[]{"reportExecutions"}))).thenReturn(requestMock);
 
-        doReturn(TimeZone.getTimeZone("America/Los_Angeles")).when(executionRequestMock).getTimeZone();
+        doReturn(TimeZone.getTimeZone("America/Los_Angeles")).when(executionRequestMock).getReportTimeZone();
         doReturn(requestMock).when(requestMock).addHeader("Accept-Timezone", "America/Los_Angeles");
         doReturn(resultMock).when(requestMock).post(executionRequestMock);
         ReportingService serviceSpy = PowerMockito.spy(new ReportingService(sessionStorageMock));

@@ -83,6 +83,10 @@ public class JasperserverRestClient {
         return new AnonymousSession(new SessionStorage(configuration, null, Locale.getDefault(), TimeZone.getDefault()));
     }
 
+    public Session getUnauthenicatedSession() {
+        return new Session(new SessionStorage(configuration, null, Locale.getDefault(), TimeZone.getDefault()));
+    }
+
     protected void login(SessionStorage storage) throws JSClientWebException {
 
         AuthenticationCredentials credentials = storage.getCredentials();

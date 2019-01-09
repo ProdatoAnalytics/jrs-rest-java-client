@@ -24,6 +24,7 @@ package com.jaspersoft.jasperserver.jaxrs.client.apiadapters.reporting;
 import com.jaspersoft.jasperserver.jaxrs.client.apiadapters.AbstractAdapter;
 import com.jaspersoft.jasperserver.jaxrs.client.core.Callback;
 import com.jaspersoft.jasperserver.jaxrs.client.core.JerseyRequest;
+import com.jaspersoft.jasperserver.jaxrs.client.core.MimeTypeUtil;
 import com.jaspersoft.jasperserver.jaxrs.client.core.RequestExecution;
 import com.jaspersoft.jasperserver.jaxrs.client.core.SessionStorage;
 import com.jaspersoft.jasperserver.jaxrs.client.core.ThreadPoolUtil;
@@ -135,9 +136,11 @@ public class ExportExecutionRequestBuilder extends AbstractAdapter {
     }
 
     public OperationResult<ReportExecutionStatusEntity> status() {
-        return buildRequest(sessionStorage, ReportExecutionStatusEntity.class,
-                new String[]{REPORT_EXECUTIONS, requestId, EXPORTS, exportId, STATUS})
-                .get();
+        JerseyRequest<ReportExecutionStatusEntity> request = buildRequest(sessionStorage, ReportExecutionStatusEntity.class,
+                new String[]{REPORT_EXECUTIONS, requestId, EXPORTS, exportId, STATUS});
+        request.setAccept(MimeTypeUtil.toCorrectAcceptMime(sessionStorage.getConfiguration(), "application/status+json"));
+
+        return request.get();
     }
 
     public <R> RequestExecution asyncStatus(final Callback<OperationResult<ReportExecutionStatusEntity>, R> callback) {
