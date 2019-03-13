@@ -138,7 +138,10 @@ public class JerseyRequest<ResponseType> implements RequestBuilder<ResponseType>
 
     @Override
     public OperationResult<ResponseType> get() throws JSClientWebException {
-        Invocation.Builder request = buildRequest().acceptLanguage(userLocale);
+        Invocation.Builder request = buildRequest();
+        if (userLocale != null) {
+            request.acceptLanguage(userLocale);
+        }
         return executeRequest(GET, request);
     }
 
@@ -150,13 +153,19 @@ public class JerseyRequest<ResponseType> implements RequestBuilder<ResponseType>
 
     @Override
     public OperationResult<ResponseType> put(Object entity) throws JSClientWebException {
-        Invocation.Builder request = buildRequest().acceptLanguage(userLocale);
+        Invocation.Builder request = buildRequest();
+        if (userLocale != null) {
+            request.acceptLanguage(userLocale);
+        }
         return executeRequest(PUT, request, entity);
     }
 
     @Override
     public OperationResult<ResponseType> post(Object entity) throws JSClientWebException {
-        Invocation.Builder request = buildRequest().acceptLanguage(userLocale);
+        Invocation.Builder request = buildRequest();
+        if (userLocale != null) {
+            request.acceptLanguage(userLocale);
+        }
         return executeRequest(POST, request, entity);
     }
 
