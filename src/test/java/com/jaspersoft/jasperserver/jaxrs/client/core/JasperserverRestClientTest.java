@@ -64,7 +64,7 @@ public class JasperserverRestClientTest extends PowerMockTestCase {
     @Mock
     private Session sessionMock;
     @Mock
-    private AnonymousSession anonymousSessionMock;
+    AnonymousSession anonymousSessionMock;
     @Mock
     private WebTarget webTargetMock;
     @Mock
@@ -125,7 +125,6 @@ public class JasperserverRestClientTest extends PowerMockTestCase {
         // Then
         assertEquals(session, null);
     }
-
     @Test(testName = "JasperserverRestClient_authenticate")
     public void should_return_null_when_username_is_empty() {
         // Given
@@ -137,60 +136,26 @@ public class JasperserverRestClientTest extends PowerMockTestCase {
         assertEquals(session, null);
     }
 
-    @Test
-    public void should_return_proper_Session_object_when_password_is_empty() throws Exception {
-
+    @Test(testName = "JasperserverRestClient_authenticate")
+    public void should_return_null_when_password_is_null() {
         // Given
         doReturn("url").when(configurationMock).getJasperReportsServerUrl();
-        final JasperserverRestClient client = new JasperserverRestClient(configurationMock);
-        final JasperserverRestClient spyClient = spy(client);
-
-        whenNew(AuthenticationCredentials.class)
-                .withArguments(USER_NAME, "")
-                .thenReturn(credentialsMock);
-
-        whenNew(SessionStorage.class)
-                .withArguments(eq(configurationMock), eq(credentialsMock), any(Locale.class), any(TimeZone.class))
-                .thenReturn(sessionStorageMock);
-
-        whenNew(Session.class)
-                .withArguments(sessionStorageMock)
-                .thenReturn(sessionMock);
-        doNothing().when(spyClient).login(sessionStorageMock);
-
+        JasperserverRestClient jasperserverRestClient = new JasperserverRestClient(configurationMock);
         // When
-        Session retrieved = spyClient.authenticate(USER_NAME, "");
-
+        Session session = jasperserverRestClient.authenticate(USER_NAME, null);
         // Then
-        assertEquals(retrieved, sessionMock);
+        assertEquals(session, null);
     }
 
-    @Test
-    public void should_return_proper_Session_object_when_password_is_null() throws Exception {
-
+    @Test(testName = "JasperserverRestClient_authenticate")
+    public void should_return_null_when_password_is_empty() {
         // Given
         doReturn("url").when(configurationMock).getJasperReportsServerUrl();
-        final JasperserverRestClient client = new JasperserverRestClient(configurationMock);
-        final JasperserverRestClient spyClient = spy(client);
-
-        whenNew(AuthenticationCredentials.class)
-                .withArguments(USER_NAME, (String)null)
-                .thenReturn(credentialsMock);
-
-        whenNew(SessionStorage.class)
-                .withArguments(eq(configurationMock), eq(credentialsMock), any(Locale.class), any(TimeZone.class))
-                .thenReturn(sessionStorageMock);
-
-        whenNew(Session.class)
-                .withArguments(sessionStorageMock)
-                .thenReturn(sessionMock);
-        doNothing().when(spyClient).login(sessionStorageMock);
-
+        JasperserverRestClient jasperserverRestClient = new JasperserverRestClient(configurationMock);
         // When
-        Session retrieved = spyClient.authenticate(USER_NAME, (String) null);
-
+        Session session = jasperserverRestClient.authenticate(USER_NAME, "");
         // Then
-        assertEquals(retrieved, sessionMock);
+        assertEquals(session, null);
     }
 
     @Test
@@ -248,7 +213,6 @@ public class JasperserverRestClientTest extends PowerMockTestCase {
         // Then
         assertEquals(retrieved, sessionMock);
     }
-
     @Test
     public void should_return_proper_Session_object_with_time_zone_and_locale_as_objects() throws Exception {
 
@@ -299,7 +263,7 @@ public class JasperserverRestClientTest extends PowerMockTestCase {
         doNothing().when(spyClient).login(sessionStorageMock);
 
         // When
-        Session retrieved = spyClient.authenticate(USER_NAME, PASSWORD, (Locale) null, TimeZone.getTimeZone(TIME_ZONE));
+        Session retrieved = spyClient.authenticate(USER_NAME, PASSWORD, (Locale)null, TimeZone.getTimeZone(TIME_ZONE));
 
         // Then
         assertEquals(retrieved, sessionMock);
@@ -327,7 +291,7 @@ public class JasperserverRestClientTest extends PowerMockTestCase {
         doNothing().when(spyClient).login(sessionStorageMock);
 
         // When
-        Session retrieved = spyClient.authenticate(USER_NAME, PASSWORD, (String) null, TIME_ZONE);
+        Session retrieved = spyClient.authenticate(USER_NAME, PASSWORD, (String)null, TIME_ZONE);
 
         // Then
         assertEquals(retrieved, sessionMock);
@@ -355,7 +319,7 @@ public class JasperserverRestClientTest extends PowerMockTestCase {
         doNothing().when(spyClient).login(sessionStorageMock);
 
         // When
-        Session retrieved = spyClient.authenticate(USER_NAME, PASSWORD, new Locale(LOCALE), (TimeZone) null);
+        Session retrieved = spyClient.authenticate(USER_NAME, PASSWORD,new Locale(LOCALE), (TimeZone) null);
 
         // Then
         assertEquals(retrieved, sessionMock);
@@ -605,7 +569,7 @@ public class JasperserverRestClientTest extends PowerMockTestCase {
         verify(webTargetMock).request();
         verify(formSpy).param("j_username", USER_NAME);
         verify(formSpy).param("j_password", PASSWORD);
-        verify(formSpy).param("userTimezone", TIME_ZONE);
+        verify(formSpy).param("userTimezone",TIME_ZONE);
         verify(formSpy).param("userLocale", locale.toString());
         verify(invocationBuilderMock).post(Entity.entity(formSpy, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
         verify(responseMock).getLocation();

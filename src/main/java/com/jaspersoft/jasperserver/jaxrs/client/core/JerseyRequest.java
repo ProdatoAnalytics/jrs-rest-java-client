@@ -29,8 +29,9 @@ import com.jaspersoft.jasperserver.jaxrs.client.core.operationresult.NullEntityO
 import com.jaspersoft.jasperserver.jaxrs.client.core.operationresult.OperationResult;
 import com.jaspersoft.jasperserver.jaxrs.client.core.operationresult.OperationResultFactory;
 import com.jaspersoft.jasperserver.jaxrs.client.core.operationresult.OperationResultFactoryImpl;
-import org.glassfish.jersey.uri.UriComponent;
-
+import com.sun.jersey.api.uri.UriComponent;
+import java.util.List;
+import java.util.Map;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
@@ -39,9 +40,6 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import static com.jaspersoft.jasperserver.jaxrs.client.core.enums.MimeType.JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -63,15 +61,14 @@ public class JerseyRequest<ResponseType> implements RequestBuilder<ResponseType>
     private String contentType;
     private String acceptType;
     private Boolean handleErrors;
-    private Locale userLocale;
 
     protected JerseyRequest(SessionStorage sessionStorage, Class<ResponseType> responseClass) {
         operationResultFactory = new OperationResultFactoryImpl();
         this.responseClass = responseClass;
         this.responseGenericType = null;
         restrictedHttpMethods = sessionStorage.getConfiguration().getRestrictedHttpMethods();
-        this.userLocale = sessionStorage.getUserLocale();
         init(sessionStorage);
+
     }
 
 
@@ -139,9 +136,6 @@ public class JerseyRequest<ResponseType> implements RequestBuilder<ResponseType>
     @Override
     public OperationResult<ResponseType> get() throws JSClientWebException {
         Invocation.Builder request = buildRequest();
-        if (userLocale != null) {
-            request.acceptLanguage(userLocale);
-        }
         return executeRequest(GET, request);
     }
 
@@ -154,18 +148,12 @@ public class JerseyRequest<ResponseType> implements RequestBuilder<ResponseType>
     @Override
     public OperationResult<ResponseType> put(Object entity) throws JSClientWebException {
         Invocation.Builder request = buildRequest();
-        if (userLocale != null) {
-            request.acceptLanguage(userLocale);
-        }
         return executeRequest(PUT, request, entity);
     }
 
     @Override
     public OperationResult<ResponseType> post(Object entity) throws JSClientWebException {
         Invocation.Builder request = buildRequest();
-        if (userLocale != null) {
-            request.acceptLanguage(userLocale);
-        }
         return executeRequest(POST, request, entity);
     }
 
