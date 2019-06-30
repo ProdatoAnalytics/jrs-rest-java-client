@@ -34,6 +34,9 @@ import javax.ws.rs.core.Response.Status;
 
 import static com.jaspersoft.jasperserver.jaxrs.client.core.JerseyRequest.buildRequest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BatchResourcesAdapter extends AbstractAdapter {
     public static final String SERVICE_URI = "resources";
     private MultivaluedMap<String, String> params;
@@ -48,7 +51,7 @@ public class BatchResourcesAdapter extends AbstractAdapter {
         return this;
     }
 
-    public OperationResult<ClientResourceListWrapper> search(){
+    public OperationResult<ClientResourceListWrapper> search() {
         return getBuilder(ClientResourceListWrapper.class).get();
     }
 

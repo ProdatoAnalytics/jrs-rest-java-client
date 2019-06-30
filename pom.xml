@@ -7,14 +7,16 @@
 
     <groupId>com.jaspersoft</groupId>
     <artifactId>jrs-rest-java-client</artifactId>
-    <version>6.3.1</version>
+    <version>7.2.0</version>
     <name>REST client for JasperReports server</name>
     <url>http://github.com/Jaspersoft/jrs-rest-java-client</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <powermock.version>1.5.5</powermock.version>
-        <jasperserver-dto.version>6.3.0</jasperserver-dto.version>
+        <!-- jackson.version>2.5.4</jackson.version -->
+        
+        <jasperserver-dto.version>7.2.0</jasperserver-dto.version>
     </properties>
 
     <scm>
@@ -40,14 +42,14 @@
         <dependency>
             <groupId>com.jaspersoft.jasperserver</groupId>
             <artifactId>jasperserver-dto</artifactId>
-            <version>${jasperserver-dto.version}</version>
-        </dependency>
+             <version>${jasperserver-dto.version}</version>
+       </dependency>
 
         <!-- Jersey-->
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>2.22.1</version>
+            <version>2.25.1</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
@@ -62,7 +64,12 @@
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
-            <version>2.22.1</version>
+            <version>2.25.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-jaxb</artifactId>
+            <version>2.25.1</version>
         </dependency>
 
         <!-- TestNG -->
@@ -106,6 +113,23 @@
             <artifactId>genson</artifactId>
             <version>0.99</version>
         </dependency>
+        
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.9.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.9.5</version>
+		</dependency>
+        <dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+    		<artifactId>jackson-annotations</artifactId>
+    		<version>2.9.5</version>
+		</dependency>
+
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
@@ -147,6 +171,11 @@
             <artifactId>jul-to-slf4j</artifactId>
             <version>1.7.12</version>
         </dependency>
+        <dependency>
+        	<groupId>junit</groupId>
+        	<artifactId>junit</artifactId>
+        	<version>4.12</version>
+        </dependency>
     </dependencies>
 
 
@@ -157,8 +186,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -194,16 +223,37 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.12</version>
+                <version>2.12.1</version>
                 <configuration>
                     <skipTests>false</skipTests>
                     <excludes>
                         <exclude>**/IT.java</exclude>
+                        <exclude>com/jaspersoft/jasperserver/jaxrs/client/actual/*.java</exclude>
                     </excludes>
+                    <properties>
+		              <property>
+		                <name>junit</name>
+		                <value>false</value>
+		              </property>
+		            </properties>
                 </configuration>
+		        <dependencies>
+		          <dependency>
+		            <groupId>org.apache.maven.surefire</groupId>
+		            <artifactId>surefire-junit47</artifactId>
+		            <version>3.0.0-M3</version>
+		          </dependency>
+		          <dependency>
+		            <groupId>org.apache.maven.surefire</groupId>
+		            <artifactId>surefire-testng</artifactId>
+		            <version>3.0.0-M3</version>
+		          </dependency>
+		        </dependencies>
             </plugin>
 
-            <!-- build jar with deps -->
+            <!-- build jar with deps
+            Does not work with JARs that contain duplicate resource names!
+            Use the JARs from copy-dependencies below instead
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
@@ -220,9 +270,68 @@
                     </descriptorRefs>
                 </configuration>
             </plugin>
+             -->
+            
+            <plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-dependency-plugin</artifactId>
+			    <executions>
+			        <execution>
+			            <id>copy-dependencies</id>
+			            <phase>prepare-package</phase>
+			            <goals>
+			                <goal>copy-dependencies</goal>
+			            </goals>
+			            <configuration>
+			                <outputDirectory>${project.build.directory}/lib</outputDirectory>
+			                <overWriteReleases>false</overWriteReleases>
+			                <overWriteSnapshots>false</overWriteSnapshots>
+			                <overWriteIfNewer>true</overWriteIfNewer>
+			            </configuration>
+			        </execution>
+			    </executions>
+			</plugin>
+            
         </plugins>
     </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.4</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.14</version>
+                <configuration>
+                    <configLocation>config/sun_checks.xml</configLocation>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.7</version>
+            </plugin>
+        </plugins>
+    </reporting>
     <developers>
+        <developer>
+            <id>sherman.wood</id>
+            <name>Sherman Wood</name>
+            <email>sgwood63@gmail.com</email>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>-8</timezone>
+        </developer>
         <developer>
             <id>borys.kolesnykov</id>
             <name>Borys Kolesnykov</name>

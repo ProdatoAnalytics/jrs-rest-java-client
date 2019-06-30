@@ -147,8 +147,9 @@ public class SessionStorage {
                 .register(customRepresentationTypeProvider)
                 .register(JacksonFeature.class)
                 .register(MultiPartWriter.class);
-        if (sessionId != null) {
-            rootTarget.register(new SessionOutputFilter(sessionId));
+        if (cookies != null) {
+            //rootTarget.register(new SessionOutputFilter(sessionId));
+            rootTarget.register(new SessionOutputFilter(this));
         }
         if (configuration.getLogHttp()) {
             rootTarget.register(initLoggingFilter());

@@ -56,7 +56,7 @@ public class ReportExecutionRequest {
         return this;
     }
 
-    private TimeZone timeZone;
+    private TimeZone reportTimeZone;
 
     public String getReportUnitUri() {
         return reportUnitUri;
@@ -188,7 +188,7 @@ public class ReportExecutionRequest {
         if (getPages() != null ? !getPages().equals(that.getPages()) : that.getPages() != null) return false;
         if (getParameters() != null ? !getParameters().equals(that.getParameters()) : that.getParameters() != null)
             return false;
-        return !(getTimeZone() != null ? !getTimeZone().equals(that.getTimeZone()) : that.getTimeZone() != null);
+        return !(getReportTimeZone() != null ? !getReportTimeZone().equals(that.getReportTimeZone()) : that.getReportTimeZone() != null);
 
     }
 
@@ -205,7 +205,7 @@ public class ReportExecutionRequest {
         result = 31 * result + (getAttachmentsPrefix() != null ? getAttachmentsPrefix().hashCode() : 0);
         result = 31 * result + (getPages() != null ? getPages().hashCode() : 0);
         result = 31 * result + (getParameters() != null ? getParameters().hashCode() : 0);
-        result = 31 * result + (getTimeZone() != null ? getTimeZone().hashCode() : 0);
+        result = 31 * result + (getReportTimeZone() != null ? getReportTimeZone().hashCode() : 0);
         return result;
     }
 
@@ -223,7 +223,7 @@ public class ReportExecutionRequest {
                 ", attachmentsPrefix='" + attachmentsPrefix + '\'' +
                 ", pages='" + pages + '\'' +
                 ", parameters=" + parameters +
-                ", timeZone=" + timeZone +
+                ", timeZone=" + reportTimeZone +
                 '}';
     }
 }

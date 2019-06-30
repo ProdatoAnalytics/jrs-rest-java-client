@@ -30,6 +30,8 @@ import com.jaspersoft.jasperserver.jaxrs.client.core.operationresult.OperationRe
 import com.jaspersoft.jasperserver.jaxrs.client.core.operationresult.OperationResultFactory;
 import com.jaspersoft.jasperserver.jaxrs.client.core.operationresult.OperationResultFactoryImpl;
 import com.sun.jersey.api.uri.UriComponent;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.client.Entity;
@@ -61,13 +63,15 @@ public class JerseyRequest<ResponseType> implements RequestBuilder<ResponseType>
     private String contentType;
     private String acceptType;
     private Boolean handleErrors;
+    private SessionStorage storage;
 
     protected JerseyRequest(SessionStorage sessionStorage, Class<ResponseType> responseClass) {
         operationResultFactory = new OperationResultFactoryImpl();
         this.responseClass = responseClass;
         this.responseGenericType = null;
         restrictedHttpMethods = sessionStorage.getConfiguration().getRestrictedHttpMethods();
-        init(sessionStorage);
+        storage = sessionStorage;
+        init();
 
     }
 

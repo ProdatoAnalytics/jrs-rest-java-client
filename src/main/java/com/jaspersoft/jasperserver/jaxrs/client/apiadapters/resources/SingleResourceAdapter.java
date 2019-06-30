@@ -65,7 +65,7 @@ public class SingleResourceAdapter extends AbstractAdapter {
     }
 
     public OperationResult<ClientResource> details() {
-]        JerseyRequest<ClientResource> request = prepareDetailsRequest();
+        JerseyRequest<ClientResource> request = prepareDetailsRequest();
         return request.get();
     }
 
