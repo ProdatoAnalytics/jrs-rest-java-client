@@ -2,22 +2,9 @@ package com.jaspersoft.jasperserver.jaxrs.client.core;
 
 import com.jaspersoft.jasperserver.jaxrs.client.filters.SessionOutputFilter;
 import com.sun.jersey.multipart.impl.MultiPartWriter;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.Locale;
-import java.util.TimeZone;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
-import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
+import org.glassfish.jersey.logging.LoggingFeature;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
@@ -27,14 +14,22 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -135,7 +130,7 @@ public class SessionStorageTest extends PowerMockTestCase {
         verify(targetMock, times(1)).register(isA(JacksonJsonProvider.class));
         verify(targetMock).register(MultiPartWriter.class);
         verify(configurationMock).getLogHttp();
-        verify(targetMock, never()).register(LoggingFilter.class);
+        verify(targetMock, never()).register(LoggingFeature.class);
     }
 
     @Test
@@ -155,7 +150,7 @@ public class SessionStorageTest extends PowerMockTestCase {
         doReturn(targetMock).when(targetMock).register(MultiPartWriter.class);
         doReturn(targetMock).when(targetMock).register(any(JacksonJsonProvider.class));
         doReturn(true).when(configurationMock).getLogHttp();
-        doReturn(targetMock).when(targetMock).register(any(LoggingFilter.class));
+        doReturn(targetMock).when(targetMock).register(any(LoggingFeature.class));
 
         // When
         SessionStorage sessionStorage = new SessionStorage(configurationMock, credentialsMock, null, null);
@@ -174,7 +169,7 @@ public class SessionStorageTest extends PowerMockTestCase {
         verify(targetMock, times(1)).register(isA(JacksonJsonProvider.class));
         verify(targetMock).register(MultiPartWriter.class);
         verify(configurationMock).getLogHttp();
-        verify(targetMock).register(isA(LoggingFilter.class));
+        verify(targetMock).register(isA(LoggingFeature.class));
     }
 
     @Test
@@ -210,7 +205,7 @@ public class SessionStorageTest extends PowerMockTestCase {
         doReturn(targetMock).when(targetMock).register(any(JacksonJsonProvider.class));
         doReturn(targetMock).when(targetMock).register(any(SessionOutputFilter.class));
         doReturn(true).when(configurationMock).getLogHttp();
-        doReturn(targetMock).when(targetMock).register(any(LoggingFilter.class));
+        doReturn(targetMock).when(targetMock).register(any(LoggingFeature.class));
         when(sessionStorage.getConfiguredClient()).thenReturn(targetMock);
 
         // When

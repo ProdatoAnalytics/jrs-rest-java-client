@@ -40,8 +40,8 @@ import javax.ws.rs.core.NewCookie;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.glassfish.jersey.client.ClientProperties;
-import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
+import org.glassfish.jersey.logging.LoggingFeature;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 
@@ -157,13 +157,11 @@ public class SessionStorage {
         return rootTarget;
     }
 
-    private LoggingFilter initLoggingFilter() {
+    private LoggingFeature initLoggingFilter() {
         Logger logger = Logger.getLogger(this.getClass().getName());
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
-
-        return new LoggingFilter(logger,
-                configuration.getLogHttpEntity());
+        return new LoggingFeature(logger);
     }
 
 
